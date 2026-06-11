@@ -9,15 +9,22 @@ const token = import.meta.env.SANITY_API_READ_TOKEN;
 // visualEditingEnabled=true: fetch draft content with stega encoding (local/staging with Presentation tool)
 // visualEditingEnabled=false: fetch published content from CDN (production)
 async function loadQuery<T>(query: string, params: Record<string, any> = {}): Promise<T> {
-  return sanityClient.fetch<T>(
-    query,
-    params,
-    {
-      perspective: visualEditingEnabled ? 'drafts' : 'published',
-      useCdn: !visualEditingEnabled,
-      ...(visualEditingEnabled && token ? { token, stega: true } : {}),
-    }
-  );
+  try {
+    return await sanityClient.fetch<T>(
+      query,
+      params,
+      {
+        perspective: visualEditingEnabled ? 'drafts' : 'published',
+        useCdn: !visualEditingEnabled,
+        ...(visualEditingEnabled && token ? { token, stega: true } : {}),
+      }
+    );
+  } catch (err) {
+    // SSG-friendly fallback: if Sanity is unreachable (missing/placeholder project ID,
+    // network error, etc.) return an empty result so the static build still succeeds.
+    console.warn("[sanity] query failed, returning empty result:", err instanceof Error ? err.message : err);
+    return ([] as unknown) as T;
+  }
 }
 
 // Shared image projection — dereferences asset to include dimensions and LQIP

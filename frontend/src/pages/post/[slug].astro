@@ -5,7 +5,16 @@ import CodeBlock from "../../components/CodeBlock.astro";
 import Layout from "../../layouts/Layout.astro";
 import { formatDate } from "../../utils";
 import { urlFor, buildSrcSet } from "../../utils/image";
-import { getPost } from "../../utils/sanity";
+import { getPost, getPosts } from "../../utils/sanity";
+
+// SSG: enumerate post slugs at build time. With placeholder Sanity creds
+// this returns [] and no slug routes are generated.
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts
+    .filter((p) => p?.slug?.current)
+    .map((p) => ({ params: { slug: p.slug.current } }));
+}
 
 const { slug } = Astro.params;
 const post = await getPost(slug!);
