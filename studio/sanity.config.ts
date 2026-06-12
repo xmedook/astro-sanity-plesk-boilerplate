@@ -15,6 +15,8 @@ const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:43
 export default defineConfig({
   name: 'sanity-template-astro-clean',
   title: 'Sanity Astro Starter',
+  // Mounted under Apache at /admin/ (see PLESK_DEPLOY.md).
+  basePath: '/admin',
   projectId,
   dataset,
   plugins: [

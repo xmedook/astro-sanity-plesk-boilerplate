@@ -12,7 +12,8 @@ Branch: `plesk-ssg-boilerplate`.
 2. `frontend/package.json` — `@astrojs/vercel` dependency removed.
 3. `frontend/src/utils/sanity.ts` — `loadQuery()` wrapped in try/catch so build succeeds with placeholder Sanity creds (returns `[]`).
 4. `frontend/src/pages/post/[slug].astro` — `getStaticPaths()` added (enumerates posts at build).
-5. `frontend/.env` / `studio/.env` — `PROJECT_ID="placeholder"` so the Sanity client constructs cleanly; swap to your real project ID before going live.
+5. `studio/sanity.config.ts` — `basePath: '/admin'` so the Studio router knows it's mounted under `/admin/`. The Vite-bundled assets still reference absolute `/static/*`; the build recipe creates a symlink `frontend/dist/static -> admin/static` to resolve them.
+6. `frontend/.env` / `studio/.env` — `PROJECT_ID="placeholder"` so the Sanity client constructs cleanly; swap to your real project ID before going live.
 
 ## Reproduce on a new Plesk vhost
 
@@ -40,7 +41,8 @@ sudo -u <sys-user> bash -c '
   cd '"$DST"' && npm install --no-audit --no-fund &&
   npm run build --workspace=frontend &&
   npm run build --workspace=studio &&
-  cp -r studio/dist frontend/dist/admin
+  cp -r studio/dist frontend/dist/admin &&
+  ln -sfn admin/static frontend/dist/static
 '
 
 # 5. Issue Let's Encrypt.
@@ -57,7 +59,8 @@ sudo -u koodehosting.com bash -c '
   npm run build --workspace=frontend &&
   npm run build --workspace=studio &&
   rm -rf frontend/dist/admin &&
-  cp -r studio/dist frontend/dist/admin
+  cp -r studio/dist frontend/dist/admin &&
+  ln -sfn admin/static frontend/dist/static
 '
 ```
 
