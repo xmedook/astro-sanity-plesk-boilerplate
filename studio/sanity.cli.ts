@@ -16,7 +16,9 @@ export default defineCliConfig({
     dataset,
   },
   deployment: {
-    autoUpdates: true,
+    // Self-hosted under Apache. Disable auto-updates so the local bundle is
+    // the runtime — no fetch of core.sanity-cdn.com/bridge.js, no appId required.
+    autoUpdates: false,
   },
   studioHost: process.env.SANITY_STUDIO_STUDIO_HOST || '', // Visit https://www.sanity.io/docs/environment-variables to learn more about using environment variables for local & production.
 })
