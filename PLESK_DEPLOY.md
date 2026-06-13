@@ -85,3 +85,49 @@ Apache picks up the new `frontend/dist/` immediately; no reload needed.
 If you need Visual Editing / live preview, switch to `output: "server"`, add
 `@astrojs/node`, and follow the nexodigital.mx pattern (Plesk Node Toolkit +
 Passenger + `app.js` wrapper).
+
+## Sanity Studio access — onboarding gotchas
+
+The two pitfalls that *will* block you the first time, in order:
+
+### 1. You must be a **project member**, not just an org admin
+
+Being admin of the Sanity Organization that owns the project is **not** enough — the
+Studio enforces project-level membership independently. Symptom:
+
+> You are not a member of this project or the project does not exist
+
+Fix: open
+`https://www.sanity.io/manage/project/<projectId>/members` and add yourself
+(or any other editor) as a project member. Organization-level admin grants
+billing/visibility but not Studio sign-in.
+
+### 2. You must whitelist the Studio origin under **CORS origins**
+
+The Studio (`/admin/`) talks to `https://<projectId>.api.sanity.io` from the
+browser, so the API rejects requests whose `Origin` header isn't allowlisted.
+Symptom: the Studio loads (white shell, sidebar) but content panes stay blank,
+and DevTools shows `403` on `/v*/users/me` / `/v*/projects`.
+
+Verify from the host:
+
+```bash
+curl -sI -H "Origin: https://<slug>.<parent-domain>" \
+     "https://<projectId>.api.sanity.io/v2024-01-01/users/me"
+# 403 + `vary: Origin`  → CORS not allowed
+# 200 / 401             → CORS OK (401 just means no auth cookie, which is normal for curl)
+```
+
+Fix: in `https://www.sanity.io/manage/project/<projectId>/api`, **CORS Origins → Add**:
+
+* Origin: `https://<slug>.<parent-domain>` (no trailing slash, no path).
+* Check **Allow credentials**.
+
+Add a separate entry for `http://localhost:3333` if you also run the Studio locally.
+
+### 3. (Optional) Read token for private datasets
+
+The frontend uses `useCdn: true` against the public CDN by default and works
+without a token for public datasets. If your dataset is private, generate a
+read token at `…/api` → **Tokens → Add API token** (Viewer role) and put it in
+`frontend/.env` as `SANITY_API_READ_TOKEN`.
