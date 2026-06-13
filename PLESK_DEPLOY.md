@@ -41,6 +41,7 @@ sudo -u <sys-user> bash -c '
   cd '"$DST"' && npm install --no-audit --no-fund &&
   npm run build --workspace=frontend &&
   npm run build --workspace=studio &&
+  rm -rf frontend/dist/admin frontend/dist/static &&
   cp -r studio/dist frontend/dist/admin &&
   ln -sfn admin/static frontend/dist/static
 '
@@ -58,7 +59,7 @@ sudo -u koodehosting.com bash -c '
   cd /var/www/vhosts/koodehosting.com/astro-sanity.koodehosting.com
   npm run build --workspace=frontend &&
   npm run build --workspace=studio &&
-  rm -rf frontend/dist/admin &&
+  rm -rf frontend/dist/admin frontend/dist/static &&
   cp -r studio/dist frontend/dist/admin &&
   ln -sfn admin/static frontend/dist/static
 '
@@ -131,3 +132,46 @@ The frontend uses `useCdn: true` against the public CDN by default and works
 without a token for public datasets. If your dataset is private, generate a
 read token at `…/api` → **Tokens → Add API token** (Viewer role) and put it in
 `frontend/.env` as `SANITY_API_READ_TOKEN`.
+
+## Plesk panel walkthrough (UI-only deploy)
+
+For sites where you'd rather not touch SSH:
+
+1. **Add Subdomain** — `Websites & Domains` → `Add Subdomain`. Leave the default Document root for now (`/<slug>`).
+2. **Git clone** — inside the subdomain → `Git` → `Remote Git hosting` → URL `https://github.com/xmedook/astro-sanity-plesk-boilerplate.git`, branch `main`, path = subdomain webspace root. Deploy mode = Manual.
+3. **Pull updates** + **Deploy now** — `pull` fetches into Plesk's internal mirror, `Deploy` rsyncs files to the webspace. Both clicks are required the first time.
+4. **Set Document root** to `<slug>/frontend/dist` (`Hosting Settings`).
+5. **Copy `.env.example` → `.env`** in `frontend/` and `studio/` (File Manager). Fill in the Sanity `PROJECT_ID` and `DATASET`. Both must match.
+6. **Enable Node.js on the subdomain** — `Node.js` → `Enable`, pick Node 22. You don't need to set Application Root / Startup File — the build only uses the binary, not Node at runtime.
+7. **Configure deploy actions** — `Git` → gear → `Enable additional deploy actions`. Paste the block from "Rebuild" above (single `bash -c` form below works in chrooted subscriptions too).
+8. Click `Deploy now` again. The build runs and `frontend/dist/` is populated.
+9. **Let's Encrypt** — `SSL/TLS Certificates` → Install a free basic certificate.
+10. **Sanity manage onboarding** — add yourself as project member + add the public origin to CORS Origins (see "Sanity Studio access" above).
+
+### Deploy actions snippet for the Plesk Git UI
+
+Plesk Git executes each line in a fresh shell, so `export PATH` doesn't persist between commands. Use a single `bash -c`:
+
+```bash
+bash -c '
+  set -e
+  export PATH=/.nodenv/shims:/opt/plesk/node/22/bin:$PATH
+  npm install --no-audit --no-fund
+  npm run build --workspace=frontend
+  npm run build --workspace=studio
+  rm -rf frontend/dist/admin frontend/dist/static
+  cp -r studio/dist frontend/dist/admin
+  ln -sfn admin/static frontend/dist/static
+'
+```
+
+The PATH covers both common Plesk node layouts:
+* `/.nodenv/shims/` — chrooted subscriptions (sys-user shell `chrootsh`).
+* `/opt/plesk/node/22/bin/` — non-chrooted subscriptions.
+
+### Common Plesk-flow gotchas
+
+* **Pull vs. Deploy** — pulling only updates Plesk's internal git mirror; nothing reaches the webspace until you click `Deploy now`.
+* **Chroot + Node** — if the subscription's sys-user has shell `/opt/psa/bin/chrootsh`, the deploy action runs inside the chroot where `/opt/plesk/node/22/` is not visible. Either (a) enable Node.js on the subdomain so Plesk mounts node into the chroot via `nodenv` shims under `/.nodenv/shims/`, or (b) switch the user's shell: `plesk bin subscription -u <parent-domain> -shell /bin/bash` (subscription becomes non-chrooted — only safe in single-tenant servers).
+* **Stale `frontend/dist/static` symlink** — the rebuild scripts above now `rm -rf` both `admin/` and `static` before re-creating them. Earlier versions only removed `admin/`, leaving a dangling symlink on the second run.
+* **Plesk placeholder `index.html`** — delete it from the webspace root once the boilerplate is deployed; Apache picks the boilerplate `frontend/dist/index.html` only after the Document root is set in step 4.
