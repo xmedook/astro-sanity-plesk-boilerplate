@@ -25,9 +25,9 @@ plesk bin subdomain --update <slug> -domain <parent-domain> \
 plesk repair web -y <slug>.<parent-domain>
 
 # 2. Clone this boilerplate into the vhost as the subscription's system user.
-SRC=/var/www/vhosts/koodehosting.com/astro-sanity.koodehosting.com
+REPO=https://github.com/xmedook/astro-sanity-plesk-boilerplate.git
 DST=/var/www/vhosts/<parent-domain>/<slug>.<parent-domain>
-sudo -u <sys-user> git clone -b plesk-ssg-boilerplate $SRC/.git $DST/.tmp
+sudo -u <sys-user> git clone -b main $REPO $DST/.tmp
 sudo bash -c "shopt -s dotglob && mv $DST/.tmp/* $DST/ && rmdir $DST/.tmp"
 sudo rm -f $DST/index.html        # Plesk placeholder
 
