@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-14T00:00:00Z",
+  "title": "Design System: cheapweb.mx",
+  "extensions": {
+    "colorMeta": {
+      "bg": { "role": "neutral", "displayName": "Plum Black", "canonical": "oklch(13% 0.07 305)", "tonalRamp": ["#0D0118", "#150225", "#1C0335", "#240440", "#2D0F50", "#3B1F66", "#5A3F8C", "#7A6896"] },
+      "purple": { "role": "primary", "displayName": "Electric Plum", "canonical": "oklch(52% 0.24 300)", "tonalRamp": ["#2A0A47", "#3D0F66", "#510F8A", "#6010B5", "#7218CC", "#8224E3", "#9B51E0", "#C084FC"] },
+      "ink": { "role": "neutral", "displayName": "Violet White", "canonical": "oklch(94% 0.03 300)", "tonalRamp": ["#7A6896", "#9685B0", "#B0A0C8", "#C4B8E0", "#D6CCEC", "#E4DCF4", "#F0E8FF", "#F7F2FF"] },
+      "ink-dim": { "role": "neutral", "displayName": "Ink Dim", "canonical": "oklch(80% 0.05 300)" },
+      "muted": { "role": "neutral", "displayName": "Muted Plum", "canonical": "oklch(54% 0.06 300)" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines and plan prices. Sora 800, tight. One per view." },
+      "body": { "displayName": "Body", "purpose": "All paragraph copy. Inter 400 in Ink Dim, measure 65-75ch." },
+      "label": { "displayName": "Label", "purpose": "Badges and live-status chip only. Never a section eyebrow." }
+    },
+    "shadows": [
+      { "name": "hover-lift", "value": "0 24px 48px rgba(130, 36, 227, 0.22)", "purpose": "Signature interaction: cards/CTAs rise into a violet glow on hover, paired with translateY(-4px)." },
+      { "name": "cta-pulse", "value": "0 0 0 0 rgba(130, 36, 227, 0.45)", "purpose": "Pulsing ring on the single highest-intent CTA per page. One maximum." },
+      { "name": "focus-glow", "value": "0 0 0 3px rgba(130, 36, 227, 0.45)", "purpose": "Keyboard focus ring on interactive elements." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default ease-out for state transitions and reveals. No bounce." },
+      { "name": "state", "value": "0.2s ease-out", "purpose": "Button color and hover-lift transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The action voice. Filled electric plum pill for the primary CTA (checkout, WhatsApp, booking).",
+      "html": "<button class=\"ds-btn-primary\">Pagar y empezar</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #8224E3; color: #FFFFFF; font-family: Inter, system-ui, sans-serif; font-weight: 700; font-size: 1.0625rem; padding: 1rem 2rem; border: none; border-radius: 9999px; cursor: pointer; transition: background 0.2s ease-out, transform 0.2s ease-out, box-shadow 0.2s ease-out; } .ds-btn-primary:hover { background: #6010B5; transform: translateY(-4px); box-shadow: 0 24px 48px rgba(130,36,227,0.22); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(130,36,227,0.45); } .ds-btn-primary:active { transform: translateY(-1px); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The lower-priority choice sitting next to a primary CTA. Transparent pill, ink label, hairline that turns plum on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Ver planes</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; color: #F0E8FF; font-family: Inter, system-ui, sans-serif; font-weight: 700; font-size: 1.0625rem; padding: 1rem 2rem; border: 1px solid #2D0F50; border-radius: 9999px; cursor: pointer; transition: border-color 0.2s ease-out, color 0.2s ease-out; } .ds-btn-ghost:hover { border-color: #8224E3; color: #F7F2FF; } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(130,36,227,0.45); }"
+    },
+    {
+      "name": "Plan Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Signature: one of three plan cards. The recommended one carries a plum ring + Recomendado badge; price in Sora display.",
+      "html": "<article class=\"ds-plan ds-plan--featured\"><span class=\"ds-plan__badge\">Recomendado</span><h3 class=\"ds-plan__name\">Pro</h3><p class=\"ds-plan__price\">$16,000</p><p class=\"ds-plan__desc\">Sitio completo, listo en 7 dias.</p></article>",
+      "css": ".ds-plan { display: flex; flex-direction: column; background: #150225; border: 1px solid #2D0F50; border-radius: 1rem; padding: 2rem; color: #F0E8FF; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; } .ds-plan:hover { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(130,36,227,0.22); } .ds-plan--featured { border-color: #8224E3; } .ds-plan__badge { align-self: flex-start; background: #8224E3; color: #FFFFFF; font-family: Inter, sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 9999px; margin-bottom: 1rem; } .ds-plan__name { font-family: Sora, system-ui, sans-serif; font-weight: 700; font-size: 1.5rem; margin: 0 0 0.5rem; } .ds-plan__price { font-family: Sora, system-ui, sans-serif; font-weight: 800; font-size: 2.75rem; line-height: 0.93; letter-spacing: -0.03em; margin: 0 0 0.75rem; } .ds-plan__desc { font-family: Inter, system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.6; color: #C4B8E0; margin: 0; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Brief/contact form field. Surface-2 fill, hairline that becomes plum + glow on focus.",
+      "html": "<input class=\"ds-input\" type=\"email\" placeholder=\"tu@correo.com\" />",
+      "css": ".ds-input { width: 100%; background: #1C0335; color: #F0E8FF; font-family: Inter, system-ui, sans-serif; font-size: 1.0625rem; padding: 0.875rem 1rem; border: 1px solid #2D0F50; border-radius: 1rem; transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out; } .ds-input::placeholder { color: #C4B8E0; } .ds-input:focus { outline: none; border-color: #8224E3; box-shadow: 0 0 0 3px rgba(130,36,227,0.45); }"
+    },
+    {
+      "name": "Live Status Chip",
+      "kind": "chip",
+      "refersTo": "button-ghost",
+      "description": "Honest urgency: the cupos/availability chip. Pulsing plum dot + ghost pill, label style.",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-chip__dot\"></span>3 cupos este mes</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid #2D0F50; border-radius: 9999px; padding: 0.5rem 1rem; font-family: Inter, system-ui, sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: #C4B8E0; } .ds-chip__dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: #8224E3; box-shadow: 0 0 0 0 rgba(130,36,227,0.45); animation: ds-pulse 2s ease-in-out infinite; } @keyframes ds-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(130,36,227,0.45); } 50% { box-shadow: 0 0 0 6px rgba(130,36,227,0); } } @media (prefers-reduced-motion: reduce) { .ds-chip__dot { animation: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Taller Plum (The Plum Workshop)",
+    "overview": "A workshop, not a factory. The interface is a deep-plum dark room where a single craftsperson works in the open - prices, process, and the person behind the work all visible at once. Electric violet is the tool in the maker's hand: it appears exactly where action happens (the CTA, the recommended plan, the live status dot) and nowhere else. The system sells cheap as smart value by out-crafting the category, never by looking cheap. Where the legacy site reached for decorative gradient text and glassmorphism on every surface, this system sharpens: same plum identity, but those tricks are retired. Trust and speed are the aesthetic.",
+    "keyCharacteristics": [
+      "Plum-black canvas (#0D0118), violet-tinted white ink - never pure white on black.",
+      "One accent, the electric purple, reserved for action and hierarchy.",
+      "Sora extrabold display set tight; Inter body set generous and readable.",
+      "Pill CTAs, soft 1rem cards, glow used as feedback not decoration.",
+      "Mobile-first, fast: motion is purposeful, performance is a conversion feature."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Electric Plum (#8224E3) appears on <=10% of any screen - the primary CTA, the recommended plan, an active state. If two purple things compete for click me, one is wrong.", "section": "colors" },
+      { "name": "The No-Pure-White Rule", "body": "Text on plum-black is always Ink (#F0E8FF) or Ink Dim (#C4B8E0), never #FFFFFF. The only #FFFFFF in the system is the label inside a filled purple button.", "section": "colors" },
+      { "name": "The Sora-Heading / Inter-Body Rule", "body": "Sora is for headings, prices, and numbers only - never body copy. Inter is for everything readable.", "section": "typography" },
+      { "name": "The No-Eyebrow Rule", "body": "No tiny tracked uppercase kicker stacked above section headings. The Label style is for badges and status, not section scaffolding.", "section": "typography" },
+      { "name": "The Tonal-Depth Rule", "body": "To raise an element, step up the plum ramp before reaching for a shadow. Shadow is violet and earned by interaction - never a static decorative grey.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the canvas Plum Black (#0D0118) and reserve Electric Plum (#8224E3) for action - the One Voice Rule.",
+      "Do set body copy in Ink Dim (#C4B8E0); it clears 4.5:1. Use Ink (#F0E8FF) for headings.",
+      "Do pair Sora (headings/prices) with Inter (body) on the contrast axis. Never two near-identical sans.",
+      "Do lift surfaces by stepping the plum tonal ramp first; use the violet Hover Lift glow only for interactivity.",
+      "Do keep one pulsing CTA per page and one bordered recomendado plan - singular emphasis converts.",
+      "Do ship prefers-reduced-motion fallbacks for the marquee, aurora, pulse, and hover lift.",
+      "Do test every heading at 360px / 768px / 1280px - Sora extrabold + long MX words overflow narrow grids."
+    ],
+    "donts": [
+      "Don't use gradient text (background-clip: text on a gradient). The legacy .text-gradient-purple is retired.",
+      "Don't default to glassmorphism. The legacy .glass-card blur-on-everything is retired; use solid Surface tones.",
+      "Don't set Muted Plum (#7A6896) as small body text - it's 4.11:1, large/bold only. Never #FFFFFF text on plum-black.",
+      "Don't build the generic SaaS landing: no hero-metric template, no identical card grids, no tracked uppercase eyebrow over every section.",
+      "Don't look cheap or spammy: no clip-art, no loud strikethrough-discount energy. Cheap is carried by craft.",
+      "Don't look like a corporate agency: no stock-photo teams, no we deliver solutions. The founder is visible and named.",
+      "Don't over-design: no framer/ogl animation maximalism that hurts mobile load. Static copy ships zero JS.",
+      "Don't use a colored border-left/border-right stripe as a card accent - use a full 1px border or the plum tonal step."
+    ]
+  }
+}

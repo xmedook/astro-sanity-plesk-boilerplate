@@ -1,25 +1,62 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ── cheapweb.mx · "El Taller Plum" design tokens ──────────────────────────
+   Source of truth: DESIGN.md (root). Keep token values in sync there.
+   Tailwind 4 @theme → utilities (bg-bg, text-ink, font-display, etc.). */
 @theme {
-  --font-sans: "Inter", sans-serif;
-  --font-serif: "PT Serif", serif;
+  /* Type — Sora (display/headings/prices) + Inter (body). Contrast axis. */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
 
-  --color-white: #fff;
-  --color-black: #101112;
-  --color-gray-200: #ced2d9;
-  --color-gray-600: #6e7683;
-  --color-blue-600: #1e61cd;
-  --color-magenta-100: #f9d7eb;
+  /* Neutral plum ramp — depth comes from stepping these, not from shadow. */
+  --color-bg: #0d0118;
+  --color-surface: #150225;
+  --color-surface-2: #1c0335;
+  --color-elevated: #240440;
+  --color-border-solid: #2d0f50;
+
+  /* Ink — violet-tinted white. Never pure #fff on plum-black. */
+  --color-ink: #f0e8ff;       /* headings, primary text — ~17:1 on bg */
+  --color-ink-dim: #c4b8e0;   /* body copy — ~10.9:1 on bg, the paragraph default */
+  --color-muted: #7a6896;     /* labels/meta only — 4.11:1, large/bold text only */
+
+  /* Primary — the one voice. Action + hierarchy only (≤10% of any screen). */
+  --color-purple: #8224e3;
+  --color-purple-light: #9b51e0;
+  --color-purple-dark: #6010b5;
+
+  /* Radius — pill CTAs, soft 1rem cards. */
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
+
+  /* Motion — ease-out, no bounce. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Violet glow shadows (outside Tailwind color scale; used as feedback only). */
+:root {
+  --shadow-hover-lift: 0 24px 48px rgba(130, 36, 227, 0.22);
+  --shadow-focus-glow: 0 0 0 3px rgba(130, 36, 227, 0.45);
 }
 
 html {
-  background-color: var(--color-white);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  scroll-behavior: smooth;
   text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

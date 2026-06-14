@@ -1,0 +1,58 @@
+---
+/**
+ * H06 · Why this price (home). Three transparency reasons + a comparison footer.
+ * Surface band, numbered cards — same language system as the express version.
+ */
+const reasons = [
+  {
+    title: "Sin oficinas, sin vendedores, sin intermediarios",
+    body: "No pagás renta de oficina en Polanco, ni comisiones de vendedores, ni “ejecutivos de cuenta” que sólo reenvían correos. Pagás directo al equipo que construye tu sitio.",
+  },
+  {
+    title: "Sólo 6 proyectos al mes",
+    body: "No aceptamos 20 sitios simultáneos. 6 al mes, máximo. Mantenemos calidad sin inflar el equipo — ni el precio.",
+  },
+  {
+    title: "Entrada al ecosistema, no producto final",
+    body: "Si tu sitio queda increíble y necesitás SEO avanzado, ads o automatizaciones, tenemos nexodigital. Primero entregamos rápido. La relación larga viene después, sólo si tiene sentido para ti.",
+  },
+];
+---
+
+<section class="bg-surface/40 px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      ¿Por qué tan barato? ¿Es confiable?
+    </h2>
+    <p class="mt-4 text-lg text-ink-dim text-pretty">
+      Pregunta justa. Respuesta corta: no es barato, es <span class="text-ink">precio justo</span>.
+    </p>
+
+    <ol class="mt-10 space-y-4">
+      {
+        reasons.map((reason, i) => (
+          <li class="flex gap-5 rounded-card border border-border-solid bg-bg/60 p-6 transition-colors duration-200 hover:border-purple/40 md:p-7">
+            <span
+              class="font-display text-4xl font-extrabold leading-none tabular-nums text-purple/70 md:text-5xl"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <h3 class="font-display text-xl font-bold text-ink">{reason.title}</h3>
+              <p class="mt-2 leading-relaxed text-ink-dim text-pretty">{reason.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="mt-10 rounded-card border border-purple/30 bg-surface p-6 leading-relaxed text-ink-dim text-pretty md:p-7">
+      Un sitio web comparable en agencia tradicional:
+      <span class="text-ink">$18,000–$45,000 MXN</span>. Mismo resultado, mismo
+      WordPress, misma calidad — sin el sobreprecio.
+    </p>
+  </div>
+</section>

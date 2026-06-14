@@ -1,0 +1,63 @@
+---
+/**
+ * S06 · Why This Price. Three reasons + a subtle competitive blockquote.
+ * Reasons are a real ordered argument, not an icon-card grid.
+ */
+const reasons = [
+  {
+    title: "Plantilla premium, no diseño desde cero",
+    body: "Trabajamos con una base de diseño probada y la personalizamos con tus colores, textos, fotos y logo. No es Wix — es WordPress profesional con un atajo inteligente que nos permite cobrar menos sin entregar menos.",
+  },
+  {
+    title: "Máximo 5 sitios por semana",
+    body: "No aceptamos 20 simultáneos. 5 a la semana, máximo. Eso nos permite cumplir los 7 días y respaldar el reembolso si no lo hacemos.",
+  },
+  {
+    title: "Es la puerta de entrada, no el techo",
+    body: "Primero entregamos. Si tu negocio crece, upgradeás a Smart ($8K), Pro ($16K) o Pro+Tienda ($24K). El resto viene después, solo si tiene sentido.",
+  },
+];
+---
+
+<section class="bg-surface/40 px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      ¿Por qué {" "}<span class="text-purple">$3,900</span> y no $8,000 como los demás?
+    </h2>
+    <p class="mt-4 text-lg text-ink-dim">Pregunta justa. Tres razones:</p>
+
+    <ol class="mt-10 space-y-4">
+      {
+        reasons.map((reason, i) => (
+          <li class="flex gap-5 rounded-card border border-border-solid bg-bg/60 p-6 transition-colors duration-200 hover:border-purple/40 md:p-7">
+            <span
+              class="font-display text-4xl font-extrabold leading-none tabular-nums text-purple/70 md:text-5xl"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <h3 class="font-display text-xl font-bold text-ink">{reason.title}</h3>
+              <p class="mt-2 leading-relaxed text-ink-dim text-pretty">{reason.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <blockquote
+      class="mt-12 rounded-card border border-border-solid bg-surface/50 p-6 md:p-7"
+    >
+      <p class="leading-relaxed text-ink-dim text-pretty">
+        La alternativa más conocida de este segmento cobra <span class="text-ink">$4,800 MXN</span>
+        — sin WordPress editable, sin GA4, sin Pixel, con solo 1 revisión.
+      </p>
+      <p class="mt-3 font-semibold text-ink">
+        cwmx Express: <span class="text-purple-light">$3,900</span> · WordPress ·
+        tracking · 2 revisiones.
+      </p>
+    </blockquote>
+  </div>
+</section>

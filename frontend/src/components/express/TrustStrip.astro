@@ -1,0 +1,58 @@
+---
+/**
+ * Trust strip. Factual signals only — the included stack + the deal's
+ * reassurances. No invented logos, metrics, or testimonials.
+ */
+import { express, stripeReady } from "../../config/express";
+
+const stack = [
+  "WordPress editable",
+  "Dominio .com/.mx",
+  "Hosting 1 año",
+  "5 correos",
+  "GA4 + Meta Pixel",
+  "SSL incluido",
+];
+
+const reassurances = [
+  { label: "Pago único", note: "sin contratos ni mensualidades" },
+  {
+    label: stripeReady ? "Stripe seguro" : "Pago seguro",
+    note: "no guardamos datos de tarjeta",
+  },
+  { label: "100% tuyo", note: "editás el sitio cuando quieras" },
+  { label: "Máx. 5 por semana", note: "calidad y plazo respaldados" },
+];
+---
+
+<section class="bg-surface/40 px-5 py-14 md:px-8 md:py-16">
+  <div class="mx-auto max-w-5xl">
+    <p class="text-center text-sm font-semibold uppercase tracking-[0.12em] text-purple-light">
+      Todo incluido en tu {express.price}
+    </p>
+
+    <ul class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+      {
+        stack.map((item) => (
+          <li class="inline-flex items-center gap-2 rounded-pill border border-border-solid bg-bg/50 px-4 py-2 text-sm font-medium text-ink">
+            <svg class="h-4 w-4 shrink-0 text-purple-light" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M13 4 6 12l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            {item}
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-10 grid gap-px overflow-hidden rounded-card border border-border-solid bg-border-solid sm:grid-cols-2 lg:grid-cols-4">
+      {
+        reassurances.map((r) => (
+          <div class="bg-bg px-5 py-5 text-center">
+            <p class="font-display text-base font-bold text-ink">{r.label}</p>
+            <p class="mt-1 text-sm leading-snug text-ink-dim text-pretty">{r.note}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

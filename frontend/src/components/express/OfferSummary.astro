@@ -1,0 +1,46 @@
+---
+/**
+ * S02 · Offer Summary. Three facts in a surface band: price / delivery / payment.
+ * Not the hero-metric template — these are labeled terms of the deal, with a
+ * jump link to the demos.
+ */
+import { express, stripeReady } from "../../config/express";
+
+const { price, deliveryDays } = express;
+
+const rows = [
+  { label: "Precio piloto", value: `${price} MXN`, note: "pago único" },
+  { label: "Entrega", value: `${deliveryDays} días hábiles`, note: "garantizado" },
+  {
+    label: "Pago",
+    value: stripeReady ? "Stripe seguro" : "Pago seguro",
+    note: "sin tarjeta guardada",
+  },
+];
+---
+
+<section class="px-5 md:px-8">
+  <div
+    class="mx-auto grid max-w-5xl items-stretch gap-px overflow-hidden rounded-card border border-border-solid bg-border-solid sm:grid-cols-3"
+  >
+    {
+      rows.map((row) => (
+        <div class="bg-surface px-6 py-6 text-center sm:py-7">
+          <p class="text-xs font-bold uppercase tracking-[0.08em] text-ink-dim">
+            {row.label}
+          </p>
+          <p class="mt-2 font-display text-xl font-bold text-ink">{row.value}</p>
+          <p class="mt-0.5 text-sm text-ink-dim">{row.note}</p>
+        </div>
+      ))
+    }
+  </div>
+  <p class="mx-auto mt-5 max-w-5xl text-center sm:text-right">
+    <a
+      href="#demos"
+      class="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-light underline-offset-4 transition-colors hover:text-ink hover:underline"
+    >
+      Ver demos reales <span aria-hidden="true">→</span>
+    </a>
+  </p>
+</section>

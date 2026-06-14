@@ -1,0 +1,58 @@
+---
+/**
+ * Shared post card (plum). Used by the /blog index and the home BlogPreview.
+ * Image → category · date → title → excerpt, whole card links to the article.
+ */
+import { urlFor, buildSrcSet } from "../../utils/image";
+import { formatDate } from "../../utils";
+import type { Post } from "../../utils/sanity";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const href = `/post/${post.slug.current}`;
+---
+
+<article
+  data-category={post.category}
+  class="group flex flex-col overflow-hidden rounded-card border border-border-solid bg-surface transition-all duration-200 hover:-translate-y-1 hover:border-purple/50"
+>
+  <a href={href} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
+    {
+      post.mainImage ? (
+        <img
+          class="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          src={urlFor(post.mainImage).width(560).height(350).fit("crop").auto("format").quality(80).url()}
+          srcset={buildSrcSet(post.mainImage, [400, 560, 760], 80)}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          width={560}
+          height={350}
+          loading="lazy"
+          decoding="async"
+          alt={post.mainImage.alt || post.title || "Artículo del blog"}
+        />
+      ) : (
+        <div class="flex aspect-[16/10] w-full items-center justify-center bg-surface-2">
+          <span class="font-display text-3xl font-extrabold text-elevated">cw</span>
+        </div>
+      )
+    }
+  </a>
+  <div class="flex flex-1 flex-col p-6">
+    <p class="flex flex-wrap items-center gap-x-2 text-xs font-semibold uppercase tracking-[0.08em] text-purple-light">
+      {post.category && <span>{post.category}</span>}
+      {post.category && <span class="text-muted" aria-hidden="true">·</span>}
+      <span class="text-ink-dim">{formatDate(post.publishedAt ?? post._createdAt)}</span>
+      {post.readTime && <span class="text-muted" aria-hidden="true">·</span>}
+      {post.readTime && <span class="text-ink-dim normal-case">{post.readTime}</span>}
+    </p>
+    <h3 class="mt-2 font-display text-lg font-bold leading-snug text-ink">
+      <a href={href} class="transition-colors hover:text-purple-light focus-visible:text-purple-light focus-visible:outline-none">
+        {post.title}
+      </a>
+    </h3>
+    {post.excerpt && <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-dim">{post.excerpt}</p>}
+  </div>
+</article>

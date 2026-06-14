@@ -1,0 +1,45 @@
+---
+/**
+ * H08 · Process (home). Real ordered sequence brief → launch; the 01–05
+ * numbering carries the flow. Connecting plum rail.
+ */
+const steps = [
+  "Brief — formulario o WhatsApp (15 min)",
+  "Diseño — aprobás al 100% antes de desarrollar",
+  "Desarrollo — WordPress + tu contenido",
+  "Revisión y ajustes",
+  "Lanzamiento — deploy + capacitación",
+];
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Cómo funciona.
+    </h2>
+
+    <ol class="mt-12">
+      {
+        steps.map((step, i) => (
+          <li class="relative flex gap-5 pb-9 last:pb-0">
+            {i < steps.length - 1 && (
+              <span
+                aria-hidden="true"
+                class="absolute left-[1.4rem] top-12 h-[calc(100%-2.5rem)] w-px bg-border-solid"
+              />
+            )}
+            <span
+              class="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-purple/40 bg-surface font-display text-sm font-extrabold tabular-nums text-purple-light"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p class="pt-2.5 text-lg leading-snug text-ink text-pretty">{step}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

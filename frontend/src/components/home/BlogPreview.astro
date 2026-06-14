@@ -1,0 +1,49 @@
+---
+/**
+ * H12 · Blog preview. 3 most recent posts (real, from Sanity). Reuses the shared
+ * PostCard; a WhatsApp CTA closes the section (spec). Hidden when no posts exist.
+ */
+import { getPosts } from "../../utils/sanity";
+import PostCard from "../blog/PostCard.astro";
+import { home } from "../../config/home";
+
+const posts = (await getPosts()).slice(0, 3);
+---
+
+{
+  posts.length > 0 && (
+    <section class="px-5 py-20 md:px-8 md:py-28">
+      <div class="mx-auto max-w-6xl">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink">
+            Aprendé antes de decidir.
+          </h2>
+          <a
+            href="/blog"
+            class="font-semibold text-purple-light underline-offset-4 transition-colors hover:text-ink hover:underline"
+          >
+            Ver el blog →
+          </a>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+
+        <div class="mt-10 text-center">
+          <a
+            href={home.whatsappUrl}
+            data-ga="click_cta_whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-pill border border-border-solid px-7 py-3.5 text-base font-semibold text-ink transition-colors duration-200 hover:border-purple focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60"
+          >
+            Reservar mi lugar <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}

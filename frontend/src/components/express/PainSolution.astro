@@ -1,0 +1,79 @@
+---
+/**
+ * S03 · Pain → Solution. Two columns, deliberately asymmetric: the "actual"
+ * side reads dim and flat (the problem), the "entregamos" side is lit with a
+ * plum edge (the fix). Not two identical cards.
+ */
+const left = [
+  "Tarda más de 3 segundos en cargar",
+  "No se ve bien en celular",
+  "No tiene botón claro de WhatsApp",
+  "Se ve 'del 2018'",
+  "No convierte visitas en mensajes",
+];
+const right = [
+  "Carga rápido en móvil y desktop",
+  "Diseño mobile-first 2026",
+  "CTA principal visible siempre",
+  "Diseño moderno que genera confianza",
+  "Estructura clara hacia contacto",
+];
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-5xl">
+    <h2
+      class="mx-auto max-w-2xl text-center font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Tu página vieja está perdiendo clientes.
+    </h2>
+
+    <div class="mt-12 grid gap-5 md:grid-cols-2">
+      <!-- Problem: dim, flat. -->
+      <div class="rounded-card border border-border-solid bg-surface/40 p-7 md:p-8">
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.06em] text-muted">
+          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Tu sitio actual
+        </h3>
+        <ul class="mt-5 space-y-3.5">
+          {
+            left.map((item) => (
+              <li class="flex items-start gap-3 text-ink-dim">
+                <svg class="mt-1 h-4 w-4 shrink-0 text-muted" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Solution: lit with plum. -->
+      <div
+        class="rounded-card border border-purple/40 bg-surface p-7 shadow-[0_0_40px_-12px_rgba(130,36,227,0.4)] md:p-8"
+      >
+        <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.06em] text-purple-light">
+          <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M13 4 6 12l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Lo que entregamos
+        </h3>
+        <ul class="mt-5 space-y-3.5">
+          {
+            right.map((item) => (
+              <li class="flex items-start gap-3 text-ink">
+                <svg class="mt-1 h-4 w-4 shrink-0 text-purple-light" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M13 4 6 12l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

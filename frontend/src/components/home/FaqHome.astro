@@ -1,0 +1,61 @@
+---
+/**
+ * H13 · FAQ (home). Native <details>/<summary> accordion, zero JS. Same `homeFaqs`
+ * array feeds the FAQPage JSON-LD in the page.
+ */
+import { homeFaqs } from "./homeFaqData";
+---
+
+<section class="bg-surface/40 px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Preguntas frecuentes. Respuestas directas.
+    </h2>
+
+    <div class="mt-10 divide-y divide-border-solid border-y border-border-solid">
+      {
+        homeFaqs.map((faq) => (
+          <details class="faq group">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-display text-lg font-bold text-ink transition-colors hover:text-purple-light focus-visible:text-purple-light focus-visible:outline-none">
+              <span>{faq.q}</span>
+              <svg
+                class="h-5 w-5 shrink-0 text-purple-light transition-transform duration-300 ease-out group-open:rotate-45"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </summary>
+            <div class="faq-body">
+              <p class="overflow-hidden pb-5 pr-9 leading-relaxed text-ink-dim text-pretty">
+                {faq.a}
+              </p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+  .faq[open] .faq-body {
+    grid-template-rows: 1fr;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-body {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+/**
+ * S05 · Included / Not Included. Two honest columns. Excluded uses a dash glyph
+ * (ink-dim), never a red ✕ — it's scope clarity, not failure.
+ */
+import { express } from "../../config/express";
+
+const { price } = express;
+
+const included = [
+  "Una landing page (hasta 5 secciones)",
+  "WordPress mobile-first editable",
+  "WhatsApp flotante + form contacto",
+  "Dominio .com/.mx 1 año",
+  "Hosting 1 año",
+  "5 correos corporativos",
+  "GA4 + Meta Pixel configurados",
+  "SEO básico (title/meta/H1)",
+  "2 rondas de revisión",
+  "SSL gratis",
+];
+const excluded = [
+  "Sitio multipágina (más de una página)",
+  "Blog integrado",
+  "Tienda en línea / WooCommerce",
+  "Fotografía profesional",
+  "SEO avanzado o link building",
+  "Campañas de ads (gestión mensual)",
+  "Google Workspace / Microsoft 365",
+  "Revisiones ilimitadas (2 incluidas)",
+  "Mantenimiento post-entrega*",
+];
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-5xl">
+    <h2
+      class="mx-auto max-w-2xl text-center font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Alcance claro desde el principio.
+    </h2>
+
+    <div class="mt-12 grid gap-5 md:grid-cols-2">
+      <div class="rounded-card border border-purple/30 bg-surface p-7 md:p-8">
+        <h3 class="font-display text-lg font-bold text-ink">
+          Incluido por <span class="text-purple-light">{price}</span>
+        </h3>
+        <ul class="mt-5 space-y-3">
+          {
+            included.map((item) => (
+              <li class="flex items-start gap-3 text-ink">
+                <svg class="mt-1 h-4 w-4 shrink-0 text-purple-light" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M13 4 6 12l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="rounded-card border border-border-solid bg-surface/40 p-7 md:p-8">
+        <h3 class="font-display text-lg font-bold text-muted">
+          No incluido en este sprint
+        </h3>
+        <ul class="mt-5 space-y-3">
+          {
+            excluded.map((item) => (
+              <li class="flex items-start gap-3 text-ink-dim">
+                <svg class="mt-2 h-3.5 w-3.5 shrink-0 text-muted" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <p class="mx-auto mt-6 max-w-2xl text-center text-sm text-ink-dim">
+      *Mantenimiento disponible desde $799/mes · opcional · después del pago.
+    </p>
+    <p class="mx-auto mt-3 max-w-2xl text-center text-[0.95rem] leading-relaxed text-ink-dim">
+      ¿Necesitás algo más? Después del pago te ofrecemos add-ons sin presión:
+      correos adicionales, más secciones, mantenimiento, upgrade a Smart.
+    </p>
+  </div>
+</section>

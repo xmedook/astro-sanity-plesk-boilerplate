@@ -1,0 +1,99 @@
+---
+/**
+ * S04 · Live Demos. Integrated with the Fábrica de Demos (/demos): pulls the
+ * published `demo` docs from Sanity and reuses the shared DemoCard. When none
+ * are published yet (or Sanity is unreachable), falls back to honest
+ * "pendiente" placeholders so the section still composes.
+ */
+import { getDemos } from "../../utils/sanity";
+import DemoCard from "../demos/DemoCard.astro";
+import { demoIndustries, checkoutHref, express, stripeReady } from "../../config/express";
+
+const { price } = express;
+
+const allDemos = await getDemos();
+const featured = allDemos.slice(0, 6);
+const hasDemos = featured.length > 0;
+---
+
+<section id="demos" class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-6xl">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+      >
+        Diseñado para negocios como el tuyo.
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty">
+        No son mockups. Cada tarjeta abre un sitio real. Probá los formularios,
+        el WhatsApp, mirá cómo se ve en tu celular.
+      </p>
+    </div>
+
+    {
+      hasDemos ? (
+        <>
+          <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((demo) => (
+              <DemoCard demo={demo} />
+            ))}
+          </div>
+          <p class="mt-8 text-center">
+            <a
+              href="/demos"
+              class="inline-flex items-center gap-1.5 font-semibold text-purple-light underline-offset-4 transition-colors hover:text-ink hover:underline"
+            >
+              {
+                allDemos.length > featured.length
+                  ? `Ver las ${allDemos.length} demos por nicho`
+                  : "Ver todas las demos por nicho"
+              }
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
+        </>
+      ) : (
+        <>
+          {/* Fallback: Fábrica de Demos aún sin publicar — placeholders honestos. */}
+          <ul class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {demoIndustries.map((industry) => (
+              <li class="group relative aspect-[4/3] overflow-hidden rounded-card border border-border-solid bg-surface transition-transform duration-200 ease-out hover:-translate-y-1 hover:border-purple/50">
+                <div class="flex h-full flex-col justify-between p-4">
+                  <span class="self-start rounded-pill bg-purple/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-purple-light">
+                    Demo real · pendiente
+                  </span>
+                  <div>
+                    <span
+                      aria-hidden="true"
+                      class="font-display text-3xl font-extrabold text-elevated transition-colors group-hover:text-purple/60"
+                    >
+                      {industry.charAt(0)}
+                    </span>
+                    <p class="mt-1 font-display text-base font-bold leading-tight text-ink">
+                      {industry}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-5 text-center text-sm text-ink-dim">
+            Galería en preparación · los sitios reales de la fábrica se publican
+            en el lanzamiento.
+          </p>
+        </>
+      )
+    }
+
+    <div class="mt-10 text-center">
+      <a
+        href={checkoutHref()}
+        data-ga="checkout_started"
+        {...stripeReady ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+        class="inline-flex items-center justify-center gap-2 rounded-pill bg-purple px-7 py-4 text-base font-semibold text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-purple-dark hover:shadow-[var(--shadow-hover-lift)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60 md:text-lg"
+      >
+        Ya vi suficiente · Pagar {price} con Stripe <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>

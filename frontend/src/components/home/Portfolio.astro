@@ -1,0 +1,52 @@
+---
+/**
+ * H09 · Portfolio. "Sitios que entregamos" — pulls published demos from the
+ * Fábrica de Demos (real, navegable) and reuses the shared DemoCard. Honest
+ * placeholder when none are published. Each card links live + back to a plan.
+ */
+import { getDemos } from "../../utils/sanity";
+import DemoCard from "../demos/DemoCard.astro";
+
+const demos = (await getDemos()).slice(0, 6);
+const hasDemos = demos.length > 0;
+---
+
+<section class="bg-surface/40 px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-6xl">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+      >
+        Sitios que entregamos.
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty">
+        Cada uno es un sitio real navegable. Abrilo, probalo, imaginá el tuyo.
+      </p>
+    </div>
+
+    {
+      hasDemos ? (
+        <>
+          <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {demos.map((demo) => (
+              <DemoCard demo={demo} />
+            ))}
+          </div>
+          <p class="mt-8 text-center">
+            <a
+              href="/demos"
+              class="inline-flex items-center gap-1.5 font-semibold text-purple-light underline-offset-4 transition-colors hover:text-ink hover:underline"
+            >
+              Ver todos los sitios por nicho <span aria-hidden="true">→</span>
+            </a>
+          </p>
+        </>
+      ) : (
+        <p class="mx-auto mt-10 max-w-xl rounded-card border border-border-solid bg-surface p-8 text-center text-ink-dim">
+          Galería en preparación. Mientras tanto, mirá las
+          <a href="/demos" class="font-semibold text-purple-light underline-offset-4 hover:underline"> demos por nicho</a>.
+        </p>
+      )
+    }
+  </div>
+</section>

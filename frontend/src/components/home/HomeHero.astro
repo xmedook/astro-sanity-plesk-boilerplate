@@ -1,0 +1,94 @@
+---
+/**
+ * H01 · Hero. cheapweb.mx top fold: outcome-led headline, two CTAs (book / WA),
+ * trust line + bullets. Contained plum glow, no heavy animation.
+ */
+import { home, bookingHref, bookingReady } from "../../config/home";
+import Cta from "../express/Cta.astro";
+
+const { cupos, whatsappUrl } = home;
+
+const trustBullets = [
+  "Dominio + hosting 1 año incluido",
+  "WordPress editable",
+  "Sin mensualidades obligatorias",
+  "Aprobás el diseño antes de desarrollar",
+];
+---
+
+<section class="relative overflow-hidden px-5 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24">
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -right-40 -top-44 h-[36rem] w-[36rem] rounded-full opacity-70 blur-3xl"
+    style="background: radial-gradient(circle, rgba(130,36,227,0.42) 0%, rgba(130,36,227,0) 70%);"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-3xl text-center">
+    <p
+      class="mb-7 inline-flex items-center gap-2 rounded-pill border border-purple/40 bg-purple/10 px-4 py-1.5 text-sm font-medium text-ink"
+    >
+      <span class="hero-dot" aria-hidden="true"></span>
+      {cupos.total} cupos {cupos.period} · {cupos.reserved} ya reservados
+    </p>
+
+    <h1
+      class="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[0.95] tracking-[-0.03em] text-balance text-ink"
+    >
+      Tu negocio en internet. <span class="text-purple">En 14 días.</span>
+    </h1>
+
+    <p class="mt-5 font-display text-2xl font-bold text-ink md:text-3xl text-balance">
+      Sin agencia, sin sorpresas, sin contratos eternos.
+    </p>
+
+    <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-ink-dim text-pretty">
+      Normalmente $18,000+. Desde $8,000 MXN. Diseño profesional + WordPress +
+      dominio + hosting 1 año.
+    </p>
+
+    <p class="mx-auto mt-4 max-w-lg text-[0.95rem] text-ink-dim">
+      Si algo sale mal, respondemos. Si no entregamos a tiempo, te devolvemos.
+    </p>
+
+    <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <Cta href={bookingHref()} event="click_cta_tidycal" pulse external={bookingReady}>
+        Agenda 15 min con Alejandro <span aria-hidden="true">→</span>
+      </Cta>
+      <Cta href={whatsappUrl} variant="ghost" event="click_cta_whatsapp" external>
+        Hablar por WhatsApp
+      </Cta>
+    </div>
+
+    <ul class="mx-auto mt-10 grid max-w-xl gap-x-6 gap-y-3 text-left sm:grid-cols-2">
+      {
+        trustBullets.map((bullet) => (
+          <li class="flex items-start gap-2.5 text-[0.95rem] text-ink-dim">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-purple-light" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M16.5 5.5 8 14 3.5 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>{bullet}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-purple);
+    box-shadow: 0 0 0 0 rgba(130, 36, 227, 0.5);
+    animation: cupos-pulse 2s ease-in-out infinite;
+  }
+  @keyframes cupos-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(130, 36, 227, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(130, 36, 227, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-dot { animation: none; }
+  }
+</style>

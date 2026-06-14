@@ -1,0 +1,67 @@
+---
+/**
+ * Social proof. Renders real testimonials from config when present; until
+ * Sprint 0 fills them, shows honest "pendiente" placeholders — never invented
+ * quotes (CLAUDE.md guardrail).
+ */
+import { testimonials } from "../../config/express";
+
+const hasReal = testimonials.length > 0;
+const items = hasReal
+  ? testimonials
+  : [
+      { industry: "Restaurante", city: "Monterrey" },
+      { industry: "Despacho legal", city: "Guadalajara" },
+      { industry: "Clínica dental", city: "CDMX" },
+    ];
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-5xl">
+    <h2
+      class="mx-auto max-w-2xl text-center font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Negocios reales, sitios reales.
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-center text-lg leading-relaxed text-ink-dim text-pretty">
+      Los primeros clientes del piloto Express. Sus historias se publican aquí
+      en el lanzamiento.
+    </p>
+
+    <div class="mt-12 grid gap-5 md:grid-cols-3">
+      {
+        items.map((item) => (
+          <figure class="flex h-full flex-col rounded-card border border-border-solid bg-surface p-6 md:p-7">
+            <svg class="h-7 w-7 text-purple/50" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M9.5 6C6.5 7.5 5 10 5 13v5h5v-5H7.5c0-2 .9-3.5 2.8-4.4L9.5 6Zm9 0C15.5 7.5 14 10 14 13v5h5v-5h-2.5c0-2 .9-3.5 2.8-4.4L18.5 6Z" />
+            </svg>
+            {"quote" in item ? (
+              <>
+                <blockquote class="mt-4 flex-1 leading-relaxed text-ink text-pretty">
+                  {item.quote}
+                </blockquote>
+                <figcaption class="mt-5 border-t border-border-solid pt-4">
+                  <p class="font-display text-sm font-bold text-ink">{item.name}</p>
+                  <p class="text-sm text-ink-dim">{item.business}</p>
+                </figcaption>
+              </>
+            ) : (
+              <>
+                <p class="mt-4 flex-1 leading-relaxed text-ink-dim text-pretty">
+                  Testimonio en camino. Estamos entregando los primeros sitios del
+                  piloto.
+                </p>
+                <figcaption class="mt-5 border-t border-border-solid pt-4">
+                  <p class="font-display text-sm font-bold text-ink">
+                    {item.industry}
+                  </p>
+                  <p class="text-sm text-muted">{item.city} · pendiente lanzamiento</p>
+                </figcaption>
+              </>
+            )}
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

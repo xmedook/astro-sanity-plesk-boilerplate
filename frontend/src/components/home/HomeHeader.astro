@@ -1,0 +1,59 @@
+---
+/**
+ * Home sticky header. Logo (left) · cupos-as-menu (center) · "Agenda" CTA (right).
+ * Same shape as the express header for cross-page consistency.
+ */
+import { home, bookingHref } from "../../config/home";
+
+const { cupos } = home;
+---
+
+<header
+  class="sticky top-0 z-30 border-b border-border-solid bg-surface/80 backdrop-blur-md"
+>
+  <div
+    class="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 md:grid-cols-[1fr_auto_1fr] md:px-8"
+  >
+    <a
+      href="/"
+      class="font-display text-xl font-extrabold leading-none tracking-tight text-ink transition-opacity hover:opacity-80 md:text-2xl"
+    >
+      cheapweb<span class="text-purple">.mx</span>
+    </a>
+
+    <a
+      href="#planes"
+      class="order-last col-span-2 flex items-center justify-center gap-2 rounded-pill border border-border-solid bg-bg/40 px-3.5 py-1.5 text-sm transition-colors hover:border-purple/50 md:order-none md:col-span-1"
+    >
+      <span class="cupos-dot" aria-hidden="true"></span>
+      <span class="font-bold text-white">{cupos.total} cupos</span>
+      <span class="hidden text-ink-dim sm:inline">{cupos.period} · {cupos.reserved} reservados</span>
+    </a>
+
+    <a
+      href={bookingHref()}
+      data-ga="click_cta_tidycal"
+      class="justify-self-end rounded-pill bg-purple px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-purple-dark focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60 md:px-5"
+    >
+      Agenda 15 min
+    </a>
+  </div>
+</header>
+
+<style>
+  .cupos-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-purple);
+    box-shadow: 0 0 0 0 rgba(130, 36, 227, 0.5);
+    animation: cupos-pulse 2s ease-in-out infinite;
+  }
+  @keyframes cupos-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(130, 36, 227, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(130, 36, 227, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cupos-dot { animation: none; }
+  }
+</style>

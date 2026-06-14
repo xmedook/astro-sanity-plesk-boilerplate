@@ -1,0 +1,59 @@
+---
+/**
+ * Mobile sticky conversion bar. Price anchor + "Agenda" CTA + WhatsApp, fixed
+ * bottom, mobile only. Slides in after the hero scrolls out of view (a #hero-end
+ * sentinel drives it). Pure IntersectionObserver, reduced-motion safe.
+ */
+import { home, bookingHref, bookingReady } from "../../config/home";
+
+const { whatsappUrl } = home;
+---
+
+<div
+  id="mobile-cta"
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-border-solid bg-surface/95 backdrop-blur-md transition-transform duration-300 ease-out md:hidden"
+  style="padding-bottom: env(safe-area-inset-bottom);"
+>
+  <div class="flex items-center gap-3 px-4 py-3">
+    <div class="leading-tight">
+      <p class="text-xs text-ink-dim">Desde</p>
+      <p class="font-display text-lg font-extrabold text-ink">$8,000<span class="text-xs font-medium text-ink-dim"> MXN</span></p>
+    </div>
+    <a
+      href={whatsappUrl}
+      data-ga="click_cta_whatsapp"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      class="ml-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-pill border border-border-solid text-purple-light transition-colors hover:border-purple"
+    >
+      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.2 13.9c-.23.64-1.33 1.22-1.85 1.3-.47.07-1.07.1-1.72-.11-.39-.13-.9-.3-1.55-.58-2.73-1.18-4.51-3.93-4.65-4.11-.14-.18-1.11-1.47-1.11-2.81s.7-2 .95-2.27c.25-.27.54-.34.72-.34l.53.01c.17.01.4-.06.62.47.23.55.77 1.9.84 2.04.07.14.11.3.02.48-.09.18-.13.29-.27.45-.14.16-.29.36-.41.48-.14.13-.28.28-.12.55.16.27.71 1.16 1.52 1.88 1.04.93 1.92 1.21 2.19 1.35.27.13.43.11.59-.07.16-.18.69-.8.87-1.07.18-.28.36-.23.62-.14.25.09 1.6.75 1.87.89.27.14.45.21.52.32.07.12.07.66-.16 1.3Z" />
+      </svg>
+    </a>
+    <a
+      href={bookingHref()}
+      data-ga="click_cta_tidycal"
+      {...bookingReady ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+      class="flex h-12 shrink-0 items-center justify-center rounded-pill bg-purple px-5 font-semibold text-white transition-colors hover:bg-purple-dark focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60"
+    >
+      Agenda 15 min
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById("mobile-cta");
+  const sentinel = document.getElementById("hero-end");
+  if (bar && sentinel) {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        // Show once the hero sentinel has scrolled above the viewport top.
+        const passed = e.boundingClientRect.top < 0;
+        bar.classList.toggle("translate-y-full", !passed);
+      },
+      { threshold: 0 },
+    );
+    io.observe(sentinel);
+  }
+</script>

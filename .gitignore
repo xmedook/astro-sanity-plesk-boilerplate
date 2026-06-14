@@ -26,3 +26,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# impeccable transient hook cache (keep design.json + config, drop cache)
+.impeccable/hook.cache.json

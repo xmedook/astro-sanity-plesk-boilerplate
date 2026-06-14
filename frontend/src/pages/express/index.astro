@@ -1,0 +1,99 @@
+---
+import LandingLayout from "../../layouts/LandingLayout.astro";
+import Header from "../../components/express/Header.astro";
+import HeroExpress from "../../components/express/HeroExpress.astro";
+import OfferSummary from "../../components/express/OfferSummary.astro";
+import PainSolution from "../../components/express/PainSolution.astro";
+import DemoGrid from "../../components/express/DemoGrid.astro";
+import ScopeClarity from "../../components/express/ScopeClarity.astro";
+import WhyThisPrice from "../../components/express/WhyThisPrice.astro";
+import GuaranteeBlock from "../../components/express/GuaranteeBlock.astro";
+import TrustStrip from "../../components/express/TrustStrip.astro";
+import ProcessSteps from "../../components/express/ProcessSteps.astro";
+import Testimonials from "../../components/express/Testimonials.astro";
+import FaqExpress from "../../components/express/FaqExpress.astro";
+import FinalCtaExpress from "../../components/express/FinalCtaExpress.astro";
+import WhatsAppFab from "../../components/express/WhatsAppFab.astro";
+import { faqs } from "../../components/express/faqData";
+import { express } from "../../config/express";
+
+const title = "Sitio web profesional por $3,900 MXN · Listo en 7 días | cheapweb.mx";
+const description =
+  "Tu sitio web profesional por $3,900 MXN, listo en 7 días con WordPress + dominio + hosting + GA4 + Meta Pixel. Precio piloto. Pago seguro.";
+
+// Schema.org Offer — price + delivery window.
+const offerSchema = {
+  "@context": "https://schema.org",
+  "@type": "Offer",
+  name: "Landing Express — cheapweb.mx",
+  description:
+    "Sitio WordPress profesional, mobile-first, con dominio, hosting, GA4 y Meta Pixel. Entrega en 7 días hábiles.",
+  price: "3900",
+  priceCurrency: "MXN",
+  availability: "https://schema.org/LimitedAvailability",
+  url: Astro.url.href,
+  seller: { "@type": "Organization", name: "cheapweb.mx" },
+};
+
+// FAQPage — same content as the on-page accordion.
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+
+<LandingLayout title={title} description={description}>
+  <Fragment slot="head">
+    <meta name="robots" content="index, follow" />
+    <script type="application/ld+json" set:html={JSON.stringify(offerSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main>
+    <HeroExpress />
+    <OfferSummary />
+    <PainSolution />
+    <DemoGrid />
+    <ScopeClarity />
+    <WhyThisPrice />
+    <GuaranteeBlock />
+    <TrustStrip />
+    <ProcessSteps />
+    <Testimonials />
+    <FaqExpress />
+    <FinalCtaExpress />
+  </main>
+
+  <footer class="border-t border-border-solid px-5 py-10 text-center md:px-8">
+    <p class="font-display text-lg font-bold text-ink">
+      cheapweb<span class="text-purple">.mx</span>
+    </p>
+    <p class="mt-2 text-sm text-ink-dim">
+      Precio piloto · {express.price} MXN · {express.deliveryDays} días hábiles.
+    </p>
+  </footer>
+
+  <WhatsAppFab />
+</LandingLayout>
+
+<!-- GA4 click tracking: fire the data-ga event on CTA click. No-op until gtag exists. -->
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("a[data-ga]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const event = el.dataset.ga;
+      if (event && typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", event, {
+          event_category: "express",
+          transport_type: "beacon",
+        });
+      }
+    });
+  });
+</script>

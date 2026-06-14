@@ -1,0 +1,47 @@
+---
+/**
+ * S07 · Process. A real ordered sequence (pago → entrega), so the 01–05
+ * numbering carries information — not decorative section markers. Connected
+ * by a vertical plum rail.
+ */
+const steps = [
+  "Pagás $3,900 con Stripe (60 segundos)",
+  "Te llegamos por WhatsApp con el link de tu brief",
+  "Llenás el brief (logo, textos, fotos, accesos) en ~10 minutos",
+  "Construimos tu sitio + configuramos GA4 y Pixel (7 días hábiles)",
+  "Revisás, ajustamos (2 rondas), publicamos en tu dominio",
+];
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      Del pago al sitio publicado, sin handoffs raros.
+    </h2>
+
+    <ol class="mt-12">
+      {
+        steps.map((step, i) => (
+          <li class="relative flex gap-5 pb-9 last:pb-0">
+            {/* Connecting rail (not on last item). */}
+            {i < steps.length - 1 && (
+              <span
+                aria-hidden="true"
+                class="absolute left-[1.4rem] top-12 h-[calc(100%-2.5rem)] w-px bg-border-solid"
+              />
+            )}
+            <span
+              class="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-purple/40 bg-surface font-display text-sm font-extrabold tabular-nums text-purple-light"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p class="pt-2.5 text-lg leading-snug text-ink text-pretty">{step}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

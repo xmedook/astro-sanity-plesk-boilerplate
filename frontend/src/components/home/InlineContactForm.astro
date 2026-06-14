@@ -1,0 +1,121 @@
+---
+/**
+ * H04 · Inline contact form. Static build → no /api/lead backend yet, so submit
+ * composes a prefilled WhatsApp message (real, zero-backend path). When the SSR
+ * adapter lands, swap the inline handler for POST /api/lead → n8n → GHL.
+ */
+import { home } from "../../config/home";
+---
+
+<section class="bg-surface/40 px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-2xl">
+    <h2
+      class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+    >
+      ¿Preferís que te contactemos?
+    </h2>
+    <p class="mt-4 text-lg leading-relaxed text-ink-dim text-pretty">
+      Llenás tu info y te respondemos por WhatsApp en menos de 2 horas hábiles.
+    </p>
+
+    <form
+      id="lead-form"
+      class="mt-9 space-y-6"
+      data-wa={home.whatsapp}
+      novalidate
+    >
+      <div>
+        <label for="lead-name" class="block text-sm font-semibold text-ink">
+          Nombre y apellido
+        </label>
+        <input
+          id="lead-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          class="mt-2 w-full rounded-card border border-border-solid bg-surface-2 px-4 py-3 text-ink placeholder:text-ink-dim focus:border-purple focus:outline-none focus:ring-[3px] focus:ring-purple/40"
+          placeholder="Tu nombre"
+        />
+      </div>
+
+      <div>
+        <label for="lead-phone" class="block text-sm font-semibold text-ink">
+          WhatsApp (con país)
+        </label>
+        <input
+          id="lead-phone"
+          name="phone"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          required
+          class="mt-2 w-full rounded-card border border-border-solid bg-surface-2 px-4 py-3 text-ink placeholder:text-ink-dim focus:border-purple focus:outline-none focus:ring-[3px] focus:ring-purple/40"
+          placeholder="+52 1 81 ..."
+        />
+      </div>
+
+      <fieldset>
+        <legend class="text-sm font-semibold text-ink">¿Qué tipo de negocio?</legend>
+        <div class="mt-3 flex flex-wrap gap-2.5">
+          {
+            ["Negocio nuevo", "Ya operando", "Otro"].map((option, i) => (
+              <label class="cursor-pointer">
+                <input
+                  type="radio"
+                  name="business"
+                  value={option}
+                  class="peer sr-only"
+                  checked={i === 0}
+                />
+                <span class="inline-block rounded-pill border border-border-solid bg-surface-2 px-4 py-2 text-sm text-ink-dim transition-colors peer-checked:border-purple peer-checked:bg-purple/15 peer-checked:text-ink peer-focus-visible:ring-[3px] peer-focus-visible:ring-purple/40">
+                  {option}
+                </span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <button
+        type="submit"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-pill bg-purple px-7 py-4 text-base font-semibold text-white transition-all duration-200 ease-out hover:bg-purple-dark hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60 sm:w-auto"
+      >
+        Quiero que me contacten <span aria-hidden="true">→</span>
+      </button>
+
+      <p id="lead-error" role="alert" class="hidden text-sm text-red-400">
+        Completá tu nombre y WhatsApp para continuar.
+      </p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("lead-form") as HTMLFormElement | null;
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = String(data.get("name") || "").trim();
+      const phone = String(data.get("phone") || "").trim();
+      const business = String(data.get("business") || "");
+      const error = document.getElementById("lead-error");
+
+      if (!name || !phone) {
+        error?.classList.remove("hidden");
+        return;
+      }
+      error?.classList.add("hidden");
+
+      // GA4: fire on submit success.
+      if (typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", "form_submit", { event_category: "home" });
+      }
+
+      const wa = form.dataset.wa;
+      const msg = `Hola, soy ${name} (${phone}). Negocio: ${business}. Quiero info sobre un sitio web.`;
+      window.location.href = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+    });
+  }
+</script>

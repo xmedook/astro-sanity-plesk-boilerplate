@@ -1,0 +1,72 @@
+---
+/**
+ * Full-bleed landing layout (plum system). Unlike Layout.astro (blog,
+ * max-w-3xl), this is edge-to-edge for conversion pages. No template chrome.
+ */
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const canonicalURL = Astro.url;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="theme-color" content="#0D0118" />
+
+    {description && <meta name="description" content={description} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {image && <meta name="twitter:image" content={image} />}
+
+    <!-- Fonts: Sora (display) + Inter (body). Preconnect for first-paint speed. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured data + per-page head -->
+    <slot name="head" />
+
+    <title>{title}</title>
+  </head>
+  <body class="bg-bg text-ink antialiased">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Smooth anchor jumps (Offer Summary → #demos), reduced-motion safe. */
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  /* Account for the sticky cupos bar when jumping to anchors. */
+  :target {
+    scroll-margin-top: 5rem;
+  }
+</style>

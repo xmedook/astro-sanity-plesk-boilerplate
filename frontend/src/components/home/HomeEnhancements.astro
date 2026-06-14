@@ -1,0 +1,103 @@
+---
+/**
+ * Home motion layer (zero deps). Two enhancements, both reduced-motion safe and
+ * progressive (content is fully visible without JS — reveals only enhance):
+ *   1. [data-reveal] — IntersectionObserver fade/rise. Optional --rd stagger delay.
+ *   2. [data-count]  — count-up animation for stat numbers when scrolled into view.
+ * Applied selectively (not every section) to avoid the uniform reveal reflex.
+ */
+---
+
+<style is:global>
+  /* Hidden state is added by JS only (.reveal-ready). No JS / reduced motion =
+     content stays visible. */
+  .reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--rd, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal-ready [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-ready [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ── Reveal on scroll ──────────────────────────────────────────────────────
+  if (!reduce) {
+    document.documentElement.classList.add("reveal-ready");
+    const revealIO = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            revealIO.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+    );
+    const revealEls = document.querySelectorAll("[data-reveal]");
+    revealEls.forEach((el) => revealIO.observe(el));
+
+    // Failsafe: never let content stay hidden for non-scrolling agents
+    // (headless renderers, social-preview bots). Reveal anything still hidden.
+    window.setTimeout(() => {
+      revealEls.forEach((el) => el.classList.add("is-visible"));
+    }, 2600);
+  }
+
+  // ── Count-up on view ──────────────────────────────────────────────────────
+  function countUp(el: HTMLElement) {
+    const raw = el.dataset.count ?? el.textContent ?? "";
+    const m = raw.match(/([\d.,]+)/);
+    if (!m || reduce) {
+      el.textContent = raw;
+      return;
+    }
+    const numStr = m[1];
+    const target = parseFloat(numStr.replace(/,/g, ""));
+    const decimals = (numStr.split(".")[1] || "").length;
+    const prefix = raw.slice(0, m.index);
+    const suffix = raw.slice((m.index ?? 0) + numStr.length);
+    const dur = 1100;
+    const start = performance.now();
+    function tick(now: number) {
+      const p = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = (target * eased).toFixed(decimals);
+      el.textContent = prefix + val + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const counters = document.querySelectorAll<HTMLElement>("[data-count]");
+  if (counters.length) {
+    const countIO = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            countUp(e.target as HTMLElement);
+            countIO.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+    counters.forEach((el) => countIO.observe(el));
+  }
+</script>

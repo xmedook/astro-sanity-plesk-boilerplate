@@ -1,0 +1,42 @@
+---
+/**
+ * H02 · Social proof. "Confían en nosotros" — industries served, pulled from
+ * published niches (real) with a static fallback. No invented client logos.
+ */
+import { getNiches } from "../../utils/sanity";
+
+const niches = await getNiches();
+const served = niches.filter((n) => (n.count ?? 0) > 0).map((n) => n.title);
+
+const industries =
+  served.length > 0
+    ? served
+    : [
+        "Restaurantes",
+        "Inmobiliarias",
+        "Clínicas",
+        "Despachos",
+        "Tiendas locales",
+        "Constructoras",
+        "Spas",
+        "Consultores",
+      ];
+---
+
+<section class="border-y border-border-solid bg-surface/40 px-5 py-10 md:px-8">
+  <div class="mx-auto max-w-6xl">
+    <p class="text-center text-sm font-semibold uppercase tracking-[0.12em] text-purple-light">
+      Confían en nosotros
+    </p>
+    <ul class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5">
+      {
+        industries.map((industry) => (
+          <li class="inline-flex items-center gap-2 text-base font-medium text-ink-dim">
+            <span class="h-1.5 w-1.5 rounded-full bg-purple/60" aria-hidden="true" />
+            {industry}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

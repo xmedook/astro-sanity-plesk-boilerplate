@@ -1,0 +1,108 @@
+---
+/**
+ * H05 · Pricing. The signature 3-plan comparison. Exactly one card (Pro) wears
+ * the plum ring + recommended badge; included uses a check, excluded a dash
+ * (never a red ✕ on a plan you might still buy). Cross-sells Express below.
+ */
+import { plans, home } from "../../config/home";
+
+const { whatsappUrl } = home;
+---
+
+<section id="planes" class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto max-w-6xl">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2
+        class="font-display text-[clamp(1.875rem,4.5vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.02em] text-balance text-ink"
+      >
+        Tres planes. <span class="text-purple">Cero letra chica.</span>
+      </h2>
+      <p class="mt-4 text-lg text-ink-dim">Pago único. Sin mensualidades obligatorias.</p>
+    </div>
+
+    <div class="mt-12 grid items-start gap-5 lg:grid-cols-3">
+      {
+        plans.map((plan, i) => (
+          <article
+            data-reveal
+            style={`--rd:${i * 90}ms`}
+            class:list={[
+              "relative flex h-full flex-col rounded-[1.25rem] border bg-surface p-7 md:p-8",
+              plan.recommended
+                ? "border-purple shadow-[0_0_50px_-16px_rgba(130,36,227,0.55)] lg:-mt-4 lg:mb-4"
+                : "border-border-solid",
+            ]}
+          >
+            <span
+              class:list={[
+                "self-start rounded-pill px-3 py-1 text-xs font-bold uppercase tracking-[0.06em]",
+                plan.recommended
+                  ? "bg-purple text-white"
+                  : "border border-border-solid bg-bg/50 text-ink-dim",
+              ]}
+            >
+              {plan.badge}
+            </span>
+
+            <h3 class="mt-5 font-display text-2xl font-bold text-ink">{plan.name}</h3>
+            <p class="mt-1 text-sm leading-snug text-ink-dim text-pretty">{plan.subtitle}</p>
+
+            <p class="mt-5 font-display text-4xl font-extrabold tracking-[-0.03em] text-ink">
+              {plan.price}
+              <span class="block text-sm font-medium text-ink-dim">MXN · pago único</span>
+            </p>
+
+            <a
+              href={whatsappUrl}
+              data-ga="click_cta_whatsapp"
+              class:list={[
+                "mt-6 inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3.5 text-base font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60",
+                plan.recommended
+                  ? "bg-purple text-white hover:bg-purple-dark hover:-translate-y-0.5 hover:shadow-[var(--shadow-hover-lift)]"
+                  : "border border-border-solid text-ink hover:border-purple",
+              ]}
+            >
+              {plan.cta} <span aria-hidden="true">→</span>
+            </a>
+
+            <ul class="mt-7 space-y-2.5 border-t border-border-solid pt-6">
+              {plan.included.map((item) => (
+                <li class="flex items-start gap-2.5 text-[0.95rem] text-ink">
+                  <svg class="mt-1 h-4 w-4 shrink-0 text-purple-light" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M13 4 6 12l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+              {plan.excluded.map((item) => (
+                <li class="flex items-start gap-2.5 text-[0.95rem] text-ink-dim">
+                  <svg class="mt-2 h-3.5 w-3.5 shrink-0 text-muted" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            {plan.footnote && (
+              <p class="mt-5 text-xs text-muted">{plan.footnote}</p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- Cross-sell → Express -->
+    <div
+      class="mx-auto mt-10 flex max-w-3xl flex-col items-center justify-between gap-4 rounded-card border border-border-solid bg-surface/50 px-6 py-5 text-center sm:flex-row sm:text-left"
+    >
+      <p class="text-ink-dim">¿Solo necesitás una landing rápida con tracking incluido?</p>
+      <a
+        href="/express"
+        class="shrink-0 font-semibold text-purple-light underline-offset-4 transition-colors hover:text-ink hover:underline"
+      >
+        Landing Express → $3,900 MXN · 7 días
+      </a>
+    </div>
+  </div>
+</section>

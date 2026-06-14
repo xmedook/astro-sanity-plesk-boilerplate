@@ -1,0 +1,92 @@
+---
+/**
+ * H11 · Founder. The trust core — a real person, named, visible. Photo
+ * (/public/alejandro.jpg) is Sprint 0 pending → renders an avatar placeholder
+ * with no image tag. Metrics come from config (⚠️ placeholder, confirm).
+ */
+import { founderMetrics, bookingHref, bookingReady } from "../../config/home";
+
+// Swap to true + the real asset once /public/alejandro.jpg exists.
+const photo = { available: false, src: "/alejandro.jpg" };
+---
+
+<section class="px-5 py-20 md:px-8 md:py-28">
+  <div class="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[auto_1fr] md:gap-14">
+    <!-- Portrait -->
+    <div class="mx-auto md:mx-0">
+      {
+        photo.available ? (
+          <img
+            src={photo.src}
+            width={320}
+            height={320}
+            loading="lazy"
+            decoding="async"
+            alt="Alejandro — fundador de cheapweb.mx"
+            class="h-64 w-64 rounded-[1.5rem] object-cover md:h-72 md:w-72"
+          />
+        ) : (
+          <div
+            class="relative flex h-64 w-64 items-center justify-center overflow-hidden rounded-[1.5rem] border border-purple/30 bg-surface md:h-72 md:w-72"
+            role="img"
+            aria-label="Alejandro, fundador de cheapweb.mx"
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute -bottom-12 -right-12 h-48 w-48 rounded-full opacity-50 blur-3xl"
+              style="background: radial-gradient(circle, rgba(130,36,227,0.5) 0%, rgba(130,36,227,0) 70%);"
+            />
+            <span class="font-display text-7xl font-extrabold text-purple/70" aria-hidden="true">A</span>
+          </div>
+        )
+      }
+    </div>
+
+    <div>
+      <h2
+        class="font-display text-[clamp(1.875rem,4.5vw,2.5rem)] font-bold leading-[1.1] tracking-[-0.02em] text-balance text-ink"
+      >
+        Trabajás directo con quien construye tu sitio.
+      </h2>
+
+      <div class="mt-5 space-y-4 leading-relaxed text-ink-dim text-pretty">
+        <p>
+          Soy <span class="text-ink">Alejandro</span>. cheapweb.mx nació porque vi
+          demasiados negocios mexicanos pagando $20,000+ por sitios genéricos que no
+          convertían — o peor, sin sitio porque “es muy caro” o “tarda meses”.
+        </p>
+        <p>
+          Arranqué cheapweb con una regla: precio justo, entrega rápida, cero
+          sorpresas. Sin vendedores, sin “ejecutivos de cuenta”, sin letra chica.
+        </p>
+        <p>
+          Cuando reservás tu proyecto, hablás conmigo. Yo reviso tu brief, yo dirijo
+          el diseño, yo me aseguro de que entreguemos a tiempo. Si algo sale mal,
+          respondo yo.
+        </p>
+      </div>
+
+      <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+        {
+          founderMetrics.map((m, i) => (
+            <div data-reveal style={`--rd:${i * 90}ms`}>
+              <dt class="font-display text-3xl font-extrabold text-purple-light tabular-nums" data-count={m.value}>
+                {m.value}
+              </dt>
+              <dd class="mt-1 text-sm leading-snug text-ink-dim">{m.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <a
+        href={bookingHref()}
+        data-ga="click_cta_tidycal"
+        {...bookingReady ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+        class="mt-9 inline-flex items-center justify-center gap-2 rounded-pill bg-purple px-7 py-4 text-base font-semibold text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-purple-dark hover:shadow-[var(--shadow-hover-lift)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60"
+      >
+        Agenda 15 min conmigo <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>

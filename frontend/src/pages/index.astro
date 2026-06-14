@@ -1,17 +1,109 @@
 ---
-import Card from "../components/Card.astro";
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
-import { getPosts } from "../utils/sanity";
+import LandingLayout from "../layouts/LandingLayout.astro";
+import HomeHeader from "../components/home/HomeHeader.astro";
+import HomeHero from "../components/home/HomeHero.astro";
+import SocialProofStrip from "../components/home/SocialProofStrip.astro";
+import Services from "../components/home/Services.astro";
+import InlineContactForm from "../components/home/InlineContactForm.astro";
+import Pricing from "../components/home/Pricing.astro";
+import WhyThisPriceHome from "../components/home/WhyThisPriceHome.astro";
+import ComparisonTable from "../components/home/ComparisonTable.astro";
+import ProcessHome from "../components/home/ProcessHome.astro";
+import Portfolio from "../components/home/Portfolio.astro";
+import Testimonials from "../components/express/Testimonials.astro";
+import Founder from "../components/home/Founder.astro";
+import BlogPreview from "../components/home/BlogPreview.astro";
+import FaqHome from "../components/home/FaqHome.astro";
+import FinalCtaHome from "../components/home/FinalCtaHome.astro";
+import WhatsAppFab from "../components/express/WhatsAppFab.astro";
+import MobileCtaBar from "../components/home/MobileCtaBar.astro";
+import HomeEnhancements from "../components/home/HomeEnhancements.astro";
+import { homeFaqs } from "../components/home/homeFaqData";
 
-const posts = await getPosts();
+const title = "Sitio web profesional en 14 días desde $8,000 MXN | cheapweb.mx";
+const description =
+  "Diseño web profesional para negocios en México: WordPress, dominio, hosting y SEO incluidos. Smart $8K · Pro $16K · Pro+Tienda $24K. Pago único, sin contratos.";
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "cheapweb.mx",
+  url: Astro.url.origin,
+  description:
+    "Diseño y desarrollo de sitios web profesionales para negocios en México. Entrega rápida, precio justo, WordPress editable.",
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: homeFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 ---
 
-<Layout
-  title="Astro + Sanity"
-  description="A blog built with Astro and Sanity."
->
-  <section>
-    {posts.length ? posts.map((post) => <Card post={post} />) : <Welcome />}
-  </section>
-</Layout>
+<LandingLayout title={title} description={description}>
+  <Fragment slot="head">
+    <meta name="robots" content="index, follow" />
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <HomeHeader />
+
+  <main>
+    <HomeHero />
+    <div id="hero-end" aria-hidden="true"></div>
+    <SocialProofStrip />
+    <Services />
+    <InlineContactForm />
+    <Pricing />
+    <WhyThisPriceHome />
+    <ComparisonTable />
+    <ProcessHome />
+    <Portfolio />
+    <Testimonials />
+    <Founder />
+    <BlogPreview />
+    <FaqHome />
+    <FinalCtaHome />
+  </main>
+
+  <footer class="border-t border-border-solid px-5 py-12 md:px-8">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 text-center sm:flex-row sm:text-left">
+      <div>
+        <p class="font-display text-lg font-bold text-ink">
+          cheapweb<span class="text-purple">.mx</span>
+        </p>
+        <p class="mt-1 text-sm text-ink-dim">Sitios web profesionales. Precio justo, entrega rápida.</p>
+      </div>
+      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm" aria-label="Pie de página">
+        <a href="#planes" class="text-ink-dim transition-colors hover:text-ink">Planes</a>
+        <a href="/express" class="text-ink-dim transition-colors hover:text-ink">Landing Express</a>
+        <a href="/demos" class="text-ink-dim transition-colors hover:text-ink">Demos</a>
+        <a href="/blog" class="text-ink-dim transition-colors hover:text-ink">Blog</a>
+      </nav>
+    </div>
+  </footer>
+
+  <WhatsAppFab mobileHidden />
+  <MobileCtaBar />
+  <HomeEnhancements />
+</LandingLayout>
+
+<!-- GA4 click tracking: fire each anchor's data-ga event. No-op until gtag exists. -->
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("a[data-ga]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const event = el.dataset.ga;
+      if (event && typeof (window as any).gtag === "function") {
+        (window as any).gtag("event", event, {
+          event_category: "home",
+          transport_type: "beacon",
+        });
+      }
+    });
+  });
+</script>

@@ -1,0 +1,66 @@
+---
+/**
+ * Shared CTA. Primary = filled Electric Plum pill (the one voice).
+ * Ghost = transparent, ink label. `pulse` adds the single-per-page pulse ring.
+ * `event` becomes data-ga for the GA4 click script in the page.
+ */
+interface Props {
+  href: string;
+  variant?: "primary" | "ghost";
+  event?: string;
+  pulse?: boolean;
+  external?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  event,
+  pulse = false,
+  external = false,
+  class: className = "",
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 font-semibold text-base md:text-lg rounded-pill px-7 py-4 transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-purple/60";
+const variants = {
+  primary:
+    "bg-purple text-white hover:bg-purple-dark hover:-translate-y-0.5 hover:shadow-[var(--shadow-hover-lift)]",
+  ghost:
+    "border border-border-solid text-ink hover:border-purple hover:text-white",
+};
+---
+
+<a
+  href={href}
+  class:list={[base, variants[variant], pulse && "cta-pulse", className]}
+  data-ga={event}
+  {...external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+>
+  <slot />
+</a>
+
+<style>
+  @keyframes cta-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(130, 36, 227, 0.45);
+    }
+    50% {
+      box-shadow: 0 0 0 14px rgba(130, 36, 227, 0);
+    }
+  }
+  .cta-pulse {
+    animation: cta-pulse 2.4s ease-in-out infinite;
+  }
+  /* Keep the pulse from suppressing the hover lift shadow on hover. */
+  .cta-pulse:hover {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-pulse {
+      animation: none;
+    }
+  }
+</style>
