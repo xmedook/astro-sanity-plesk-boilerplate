@@ -1,0 +1,29 @@
+---
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+  hireHref: string;
+  hireLabel: string;
+}
+
+const { section, hireHref, hireLabel } = Astro.props;
+---
+
+<section id="contacto" class="my-12 rounded-card border border-border-solid bg-surface px-6 py-16 text-center sm:px-12">
+  {section.headline && (
+    <h2 class="mx-auto max-w-2xl font-display text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
+      {section.headline}
+    </h2>
+  )}
+  {section.subheadline && (
+    <p class="mx-auto mt-4 max-w-xl text-lg leading-7 text-ink-dim">{section.subheadline}</p>
+  )}
+  <a
+    href={hireHref}
+    data-demo-hire
+    class="mt-8 inline-block rounded-pill bg-purple px-8 py-3.5 font-semibold text-white no-underline transition-colors hover:bg-purple-dark"
+  >
+    {hireLabel}
+  </a>
+</section>

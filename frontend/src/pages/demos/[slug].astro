@@ -1,0 +1,146 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DemoHeader from "../../components/demos/DemoHeader.astro";
+import DemoSectionRenderer from "../../components/demos/DemoSectionRenderer.astro";
+import { getDemos, getDemo } from "../../utils/sanity";
+import { urlFor } from "../../utils/image";
+
+export async function getStaticPaths() {
+  const demos = await getDemos();
+  return demos.map((d) => ({ params: { slug: d.slug } }));
+}
+
+const { slug } = Astro.params;
+const demo = await getDemo(slug!);
+
+if (!demo) {
+  return Astro.redirect("/demos");
+}
+
+// Palette: demo override → niche default. Applied as inline CSS vars so a demo
+// re-skins the plum theme without recompiling Tailwind. We derive the full token
+// set (surface/border/etc.) from the demo's own bg+primary so no plum leaks onto
+// cards, borders, inputs or hover states.
+const palette = { ...(demo.paletteFallback ?? {}), ...(demo.palette ?? {}) };
+const bg = palette.bg;
+const primary = palette.primary;
+const accent = palette.accent || primary;
+
+const mix = (a: string, pct: number, b: string) => `color-mix(in srgb, ${a} ${pct}%, ${b})`;
+
+const paletteVars = [
+  bg && `--color-bg:${bg}`,
+  primary && `--color-purple:${primary}`,
+  accent && `--color-purple-light:${accent}`,
+  // Derived tokens — only when we have both anchors, else fall back to plum theme.
+  bg && primary && `--color-purple-dark:${mix(primary, 70, "#000")}`,
+  bg && primary && `--color-surface:${mix(bg, 88, primary)}`,
+  bg && primary && `--color-surface-2:${mix(bg, 80, primary)}`,
+  bg && primary && `--color-elevated:${mix(bg, 72, primary)}`,
+  bg && primary && `--color-border-solid:${mix(primary, 26, bg)}`,
+]
+  .filter(Boolean)
+  .join(";");
+
+// Layered background built from the demo's own palette — depth, not flat fill.
+const bgStyle =
+  `${paletteVars};background:` +
+  "radial-gradient(60rem 42rem at 12% -8%, color-mix(in srgb, var(--color-purple) 18%, transparent), transparent 60%)," +
+  "radial-gradient(52rem 40rem at 100% 6%, color-mix(in srgb, var(--color-purple-light) 14%, transparent), transparent 55%)," +
+  "var(--color-bg);";
+
+// cheapweb meta-CTA (buy this site) — distinct from the demo's own in-site CTAs.
+const hireHref = demo.hireCta?.href || `/express?demo=${demo.slug}`;
+
+// In-demo CTAs behave like a real business site: scroll to the contact section.
+const has = (t: string) => demo.sections?.some((s) => s._type === t);
+const contactHref = has("demoLocation") ? "#ubicacion" : has("demoCta") ? "#contacto" : hireHref;
+const contactLabel = "Contáctanos";
+
+const navMap: Array<[string, string, string]> = [
+  ["demoFeatures", "Servicios", "#servicios"],
+  ["demoSlider", "Destacados", "#destacados"],
+  ["demoPricing", "Precios", "#precios"],
+  ["demoReviews", "Reseñas", "#resenas"],
+  ["demoGallery", "Galería", "#galeria"],
+  ["demoLocation", "Ubicación", "#ubicacion"],
+  ["demoFaq", "FAQ", "#faq"],
+];
+const nav = navMap.filter(([t]) => has(t)).map(([, label, href]) => ({ label, href }));
+
+const metaTitle = demo.seo?.metaTitle || `${demo.title} — Demo cheapweb.mx`;
+const metaDescription = demo.seo?.metaDescription || demo.description;
+const ogSource = demo.seo?.ogImage ?? demo.deviceMockup;
+const ogImage = ogSource
+  ? urlFor(ogSource).width(1200).height(630).fit("crop").auto("format").quality(80).url()
+  : undefined;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: demo.title,
+  description: metaDescription,
+  url: canonical,
+  ...(ogImage ? { image: ogImage } : {}),
+  ...(demo.nicheTitle ? { about: demo.nicheTitle } : {}),
+  ...(demo.nicheKeywords?.length ? { keywords: demo.nicheKeywords.join(", ") } : {}),
+};
+---
+
+<Layout title={metaTitle} description={metaDescription} image={ogImage} bare>
+  <div id="top" style={bgStyle} class="min-h-screen text-ink">
+    {/* cheapweb meta-ribbon — the only place that breaks the fourth wall */}
+    <div data-demo-ribbon class="border-b border-border-solid bg-black/30">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-1.5 text-xs text-ink-dim sm:px-6">
+        <a href="/demos" class="inline-flex items-center gap-1.5 no-underline transition-colors hover:text-ink">
+          <span aria-hidden="true">←</span> Demo · Portafolio cheapweb.mx
+        </a>
+        <a href={hireHref} class="font-semibold text-purple-light no-underline transition-colors hover:text-ink">
+          Contratar uno igual →
+        </a>
+      </div>
+    </div>
+
+    <DemoHeader title={demo.title} hireHref={contactHref} hireLabel={contactLabel} nav={nav} />
+
+    <main class="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
+      <DemoSectionRenderer sections={demo.sections ?? []} hireHref={contactHref} hireLabel={contactLabel} />
+
+      {/* Fallback in-site CTA if the demo has no demoCta section */}
+      {
+        !has("demoCta") && (
+          <div class="my-12 text-center">
+            <a
+              href={contactHref}
+              class="inline-block rounded-pill bg-purple px-8 py-3.5 font-semibold text-white no-underline transition-colors hover:bg-purple-dark"
+            >
+              {contactLabel}
+            </a>
+          </div>
+        )
+      }
+    </main>
+
+    <footer class="mt-12 border-t border-border-solid">
+      <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div>
+          <p class="font-display text-lg font-extrabold tracking-[-0.02em] text-ink">{demo.title}</p>
+          {demo.nicheLabel && (
+            <p class="mt-1 font-sans text-xs font-bold uppercase tracking-[0.08em] text-purple-light">
+              {demo.nicheLabel}
+            </p>
+          )}
+        </div>
+        <p class="text-sm text-ink-dim">
+          Sitio demo · ¿te gusta?{" "}
+          <a href={hireHref} class="font-semibold text-purple-light no-underline transition-colors hover:text-ink">
+            Contratá uno igual
+          </a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+</Layout>

@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DemoCard from "../../components/demos/DemoCard.astro";
+import { getDemos, getNiches } from "../../utils/sanity";
+
+const [demos, niches] = await Promise.all([getDemos(), getNiches()]);
+const nichesWithDemos = niches.filter((n) => (n.count ?? 0) > 0);
+
+const title = "Demos por nicho — cheapweb.mx";
+const description =
+  "Portafolio de sitios demo listos por nicho. Mira cada uno en vivo y contrata uno igual para tu negocio.";
+---
+
+<Layout title={title} description={description} wide>
+  <section class="py-12 sm:py-16">
+    <header class="max-w-2xl">
+      <h1 class="font-display text-4xl font-extrabold leading-[0.95] tracking-[-0.03em] text-balance text-ink sm:text-6xl">
+        Demos reales, por nicho.
+      </h1>
+      <p class="mt-5 max-w-prose text-lg leading-7 text-ink-dim">
+        Cada demo es un sitio real navegable. Encuentra el de tu industria y contratá uno igual.
+      </p>
+    </header>
+
+    {
+      nichesWithDemos.length > 0 && (
+        <nav class="mt-8 flex flex-wrap gap-2" aria-label="Filtrar por nicho">
+          <a
+            href="/demos"
+            class="rounded-full border border-purple bg-purple/10 px-4 py-1.5 text-sm font-medium text-ink no-underline"
+          >
+            Todos
+          </a>
+          {nichesWithDemos.map((n) => (
+            <a
+              href={`/demos/nicho/${n.slug}`}
+              class="rounded-full border border-border-solid px-4 py-1.5 text-sm text-ink-dim no-underline transition-colors hover:border-purple-dark hover:text-ink"
+            >
+              {n.title} <span class="text-muted">({n.count})</span>
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    {
+      demos.length > 0 ? (
+        <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {demos.map((demo) => (
+            <DemoCard demo={demo} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 rounded-card border border-border-solid bg-surface p-8 text-center text-ink-dim">
+          Aún no hay demos publicados. Genera el primero con el script de la fábrica.
+        </p>
+      )
+    }
+  </section>
+</Layout>

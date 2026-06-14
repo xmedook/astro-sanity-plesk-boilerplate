@@ -1,0 +1,89 @@
+---
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+}
+
+const { section } = Astro.props;
+const slides = section.slides ?? [];
+const sid = `slider-${section._key}`;
+const withParams = (u: string) => `${u}${u.includes("?") ? "&" : "?"}auto=format&fit=crop&w=900&q=80`;
+---
+
+<section id="destacados" class="scroll-mt-24 py-16">
+  <div class="mb-8 flex items-end justify-between gap-4">
+    {section.heading && (
+      <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-balance text-ink sm:text-4xl">
+        {section.heading}
+      </h2>
+    )}
+    <div class="hidden shrink-0 gap-2 sm:flex">
+      <button
+        type="button"
+        data-slider-prev={sid}
+        aria-label="Anterior"
+        class="grid h-10 w-10 place-items-center rounded-full border border-border-solid text-ink transition-colors hover:border-purple hover:text-purple-light"
+      >←</button>
+      <button
+        type="button"
+        data-slider-next={sid}
+        aria-label="Siguiente"
+        class="grid h-10 w-10 place-items-center rounded-full border border-border-solid text-ink transition-colors hover:border-purple hover:text-purple-light"
+      >→</button>
+    </div>
+  </div>
+
+  <div
+    id={sid}
+    data-demo-slider
+    class="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+  >
+    {
+      slides.map((slide) => (
+        <article class="flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-card border border-border-solid bg-surface sm:w-[48%] lg:w-[31.5%]">
+          {slide.imageUrl && (
+            <img
+              src={withParams(slide.imageUrl)}
+              alt={slide.title || ""}
+              loading="lazy"
+              decoding="async"
+              width={900}
+              height={560}
+              class="aspect-[16/10] w-full object-cover"
+            />
+          )}
+          <div class="flex flex-1 flex-col p-6">
+            {slide.title && <h3 class="font-display text-lg font-bold text-ink">{slide.title}</h3>}
+            {slide.text && <p class="mt-2 text-sm leading-6 text-ink-dim">{slide.text}</p>}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  // Lightweight slider wiring — arrows + autoplay, one handler per [data-demo-slider].
+  // No framework; respects prefers-reduced-motion (no autoplay).
+  document.querySelectorAll<HTMLElement>("[data-demo-slider]").forEach((track) => {
+    const id = track.id;
+    const step = () => track.querySelector("article")?.getBoundingClientRect().width ?? 320;
+    const gap = 20;
+    const prev = document.querySelector(`[data-slider-prev="${id}"]`);
+    const next = document.querySelector(`[data-slider-next="${id}"]`);
+    prev?.addEventListener("click", () => track.scrollBy({ left: -(step() + gap), behavior: "smooth" }));
+    next?.addEventListener("click", () => track.scrollBy({ left: step() + gap, behavior: "smooth" }));
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    let timer = window.setInterval(advance, 5000);
+    function advance() {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
+      else track.scrollBy({ left: step() + gap, behavior: "smooth" });
+    }
+    track.addEventListener("pointerenter", () => clearInterval(timer));
+    track.addEventListener("pointerleave", () => (timer = window.setInterval(advance, 5000)));
+  });
+</script>

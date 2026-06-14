@@ -1,0 +1,54 @@
+---
+import { urlFor, buildSrcSet } from "../../../utils/image";
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+}
+
+const { section } = Astro.props;
+
+// Sanity assets first; otherwise external URLs (Unsplash/Pexels).
+const sanityImages = section.images ?? [];
+const urlImages = section.imageUrls ?? [];
+const withParams = (u: string) => `${u}${u.includes("?") ? "&" : "?"}auto=format&fit=crop&w=800&q=80`;
+---
+
+<section id="galeria" class="scroll-mt-24 py-16">
+  {section.heading && (
+    <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-balance text-ink sm:text-4xl">
+      {section.heading}
+    </h2>
+  )}
+  <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
+    {
+      sanityImages.map((img) => (
+        <img
+          class="aspect-[4/3] w-full rounded-card object-cover"
+          src={urlFor(img).width(600).height(450).fit("crop").auto("format").quality(80).url()}
+          srcset={buildSrcSet(img, [400, 600, 800], 80)}
+          sizes="(max-width: 640px) 50vw, 33vw"
+          width={600}
+          height={450}
+          loading="lazy"
+          decoding="async"
+          alt={img.alt || ""}
+        />
+      ))
+    }
+    {
+      urlImages.map((u) => (
+        <img
+          class="aspect-[4/3] w-full rounded-card object-cover"
+          src={withParams(u)}
+          sizes="(max-width: 640px) 50vw, 33vw"
+          width={600}
+          height={450}
+          loading="lazy"
+          decoding="async"
+          alt=""
+        />
+      ))
+    }
+  </div>
+</section>

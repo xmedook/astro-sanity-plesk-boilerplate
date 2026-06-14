@@ -1,0 +1,52 @@
+---
+import DemoHero from "./sections/DemoHero.astro";
+import DemoFeatures from "./sections/DemoFeatures.astro";
+import DemoPricing from "./sections/DemoPricing.astro";
+import DemoSlider from "./sections/DemoSlider.astro";
+import DemoStats from "./sections/DemoStats.astro";
+import DemoReviews from "./sections/DemoReviews.astro";
+import DemoGallery from "./sections/DemoGallery.astro";
+import DemoLocation from "./sections/DemoLocation.astro";
+import DemoFaq from "./sections/DemoFaq.astro";
+import DemoCta from "./sections/DemoCta.astro";
+import type { DemoSection } from "../../utils/sanity";
+
+interface Props {
+  sections: DemoSection[];
+  hireHref: string;
+  hireLabel: string;
+}
+
+const { sections, hireHref, hireLabel } = Astro.props;
+// Skip sections explicitly toggled off in Studio
+const visible = (sections ?? []).filter((s) => s.enabled !== false);
+---
+
+{
+  visible.map((section) => {
+    switch (section._type) {
+      case "demoHero":
+        return <DemoHero section={section} hireHref={hireHref} />;
+      case "demoFeatures":
+        return <DemoFeatures section={section} />;
+      case "demoPricing":
+        return <DemoPricing section={section} contactHref={hireHref} />;
+      case "demoSlider":
+        return <DemoSlider section={section} />;
+      case "demoStats":
+        return <DemoStats section={section} />;
+      case "demoReviews":
+        return <DemoReviews section={section} />;
+      case "demoGallery":
+        return <DemoGallery section={section} />;
+      case "demoLocation":
+        return <DemoLocation section={section} />;
+      case "demoFaq":
+        return <DemoFaq section={section} />;
+      case "demoCta":
+        return <DemoCta section={section} hireHref={hireHref} hireLabel={hireLabel} />;
+      default:
+        return null;
+    }
+  })
+}

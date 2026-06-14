@@ -1,0 +1,126 @@
+---
+import { urlFor, buildSrcSet } from "../../../utils/image";
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+  hireHref: string;
+}
+
+const { section, hireHref } = Astro.props;
+const variant = section.variant || "fullbleed";
+
+// Prefer a Sanity asset; fall back to an external URL (Unsplash/Pexels).
+const heroSrc = section.image
+  ? urlFor(section.image).width(1600).height(900).fit("crop").auto("format").quality(80).url()
+  : section.imageUrl
+    ? `${section.imageUrl}${section.imageUrl.includes("?") ? "&" : "?"}auto=format&fit=crop&w=1600&q=80`
+    : null;
+const heroAlt = section.image?.alt || section.headline || "";
+const srcset = section.image ? buildSrcSet(section.image, [800, 1200, 1600], 80) : undefined;
+---
+
+{/* ── SPLIT: text left, image card right ───────────────────────────────── */}
+{
+  variant === "split" && (
+    <section class="grid items-center gap-10 py-14 lg:grid-cols-2 lg:py-20">
+      <div>
+        <h1 class="font-display text-4xl font-extrabold leading-[0.95] tracking-[-0.03em] text-balance text-ink sm:text-5xl lg:text-6xl">
+          {section.headline}
+        </h1>
+        {section.subheadline && <p class="mt-5 max-w-xl text-lg leading-7 text-ink-dim">{section.subheadline}</p>}
+        <div class="mt-8 flex flex-wrap gap-3">
+          {section.ctaPrimary && (
+            <a href={hireHref} class="rounded-pill bg-purple px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-purple-dark">
+              {section.ctaPrimary}
+            </a>
+          )}
+          {section.ctaSecondary && (
+            <a href="#contacto" class="rounded-pill border border-border-solid px-6 py-3 font-semibold text-ink-dim no-underline transition-colors hover:text-ink">
+              {section.ctaSecondary}
+            </a>
+          )}
+        </div>
+      </div>
+      {heroSrc && (
+        <img
+          class="aspect-[4/5] w-full rounded-card object-cover shadow-[0_24px_48px_rgba(0,0,0,0.35)]"
+          src={heroSrc}
+          srcset={srcset}
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          width={1600}
+          height={900}
+          loading="eager"
+          decoding="async"
+          alt={heroAlt}
+        />
+      )}
+    </section>
+  )
+}
+
+{/* ── MINIMAL: no photo, big type on the palette gradient ───────────────── */}
+{
+  variant === "minimal" && (
+    <section class="py-20 text-center sm:py-28">
+      <h1 class="mx-auto max-w-4xl font-display text-5xl font-extrabold leading-[0.95] tracking-[-0.035em] text-balance text-ink sm:text-7xl">
+        {section.headline}
+      </h1>
+      {section.subheadline && (
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-7 text-ink-dim sm:text-xl">{section.subheadline}</p>
+      )}
+      <div class="mt-9 flex flex-wrap justify-center gap-3">
+        {section.ctaPrimary && (
+          <a href={hireHref} class="rounded-pill bg-purple px-7 py-3.5 font-semibold text-white no-underline transition-colors hover:bg-purple-dark">
+            {section.ctaPrimary}
+          </a>
+        )}
+        {section.ctaSecondary && (
+          <a href="#contacto" class="rounded-pill border border-border-solid px-7 py-3.5 font-semibold text-ink-dim no-underline transition-colors hover:text-ink">
+            {section.ctaSecondary}
+          </a>
+        )}
+      </div>
+    </section>
+  )
+}
+
+{/* ── FULLBLEED (default): photo behind, overlay text ───────────────────── */}
+{
+  variant !== "split" && variant !== "minimal" && (
+    <section class="relative overflow-hidden rounded-card">
+      {heroSrc && (
+        <img
+          class="absolute inset-0 h-full w-full object-cover opacity-40"
+          src={heroSrc}
+          srcset={srcset}
+          sizes="100vw"
+          width={1600}
+          height={900}
+          loading="eager"
+          decoding="async"
+          alt={heroAlt}
+        />
+      )}
+      <div class="absolute inset-0 bg-gradient-to-t from-bg via-bg/70 to-transparent" />
+      <div class="relative px-6 py-20 sm:px-12 sm:py-28">
+        <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[0.95] tracking-[-0.03em] text-balance text-ink sm:text-6xl">
+          {section.headline}
+        </h1>
+        {section.subheadline && <p class="mt-5 max-w-2xl text-lg leading-7 text-ink-dim">{section.subheadline}</p>}
+        <div class="mt-8 flex flex-wrap gap-3">
+          {section.ctaPrimary && (
+            <a href={hireHref} class="rounded-pill bg-purple px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-purple-dark">
+              {section.ctaPrimary}
+            </a>
+          )}
+          {section.ctaSecondary && (
+            <a href="#contacto" class="rounded-pill border border-border-solid px-6 py-3 font-semibold text-ink-dim no-underline transition-colors hover:text-ink">
+              {section.ctaSecondary}
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

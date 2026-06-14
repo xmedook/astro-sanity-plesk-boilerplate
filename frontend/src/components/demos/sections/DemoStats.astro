@@ -1,0 +1,32 @@
+---
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+}
+
+const { section } = Astro.props;
+const items = (section.items ?? []).filter((i) => i.value);
+---
+
+<section class="py-12">
+  <div class="rounded-card border border-border-solid bg-surface px-6 py-10 sm:px-12">
+    {section.heading && (
+      <h2 class="mb-8 text-center font-display text-2xl font-bold tracking-[-0.02em] text-ink">
+        {section.heading}
+      </h2>
+    )}
+    <dl class="grid grid-cols-2 gap-8 sm:grid-cols-4">
+      {
+        items.map((item) => (
+          <div class="text-center">
+            <dt class="font-display text-4xl font-extrabold leading-none tracking-[-0.03em] text-purple-light sm:text-5xl">
+              {item.value}
+            </dt>
+            <dd class="mt-2 text-sm text-ink-dim">{item.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

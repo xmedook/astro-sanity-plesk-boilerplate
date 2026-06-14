@@ -37,7 +37,7 @@ const imageProjection = `{
 
 export async function getPosts(): Promise<Post[]> {
   return loadQuery<Post[]>(
-    groq`*[_type == "post" && defined(slug.current)] | order(_createdAt desc) {
+    groq`*[_type == "post" && defined(slug.current)] | order(coalesce(publishedAt, _createdAt) desc) {
       ...,
       mainImage ${imageProjection}
     }`,
@@ -56,6 +56,197 @@ export async function getPost(slug: string): Promise<Post> {
     }`,
     { slug },
   );
+}
+
+// ─── Demo factory ──────────────────────────────────────────────────────────
+// Only published demos surface on the site; drafts stay hidden until ready.
+
+const demoCardProjection = `{
+  _id,
+  title,
+  "slug": slug.current,
+  nicheLabel,
+  "nicheTitle": niche->title,
+  "nicheSlug": niche->slug.current,
+  description,
+  tags,
+  liveUrl,
+  highlighted,
+  deviceMockup ${imageProjection},
+  hireCta,
+  palette,
+  "paletteFallback": niche->paletteDefault
+}`;
+
+export async function getDemos(): Promise<DemoCard[]> {
+  return loadQuery<DemoCard[]>(
+    groq`*[_type == "demo" && status == "published" && defined(slug.current)]
+      | order(highlighted desc, _createdAt desc) ${demoCardProjection}`,
+  );
+}
+
+export async function getDemosByNiche(nicheSlug: string): Promise<DemoCard[]> {
+  return loadQuery<DemoCard[]>(
+    groq`*[_type == "demo" && status == "published" && niche->slug.current == $nicheSlug && defined(slug.current)]
+      | order(highlighted desc, _createdAt desc) ${demoCardProjection}`,
+    { nicheSlug },
+  );
+}
+
+export async function getDemo(slug: string): Promise<Demo> {
+  return loadQuery<Demo>(
+    groq`*[_type == "demo" && slug.current == $slug][0] {
+      ...,
+      "slug": slug.current,
+      "nicheTitle": niche->title,
+      "nicheSlug": niche->slug.current,
+      "nicheKeywords": niche->keywords,
+      "paletteFallback": niche->paletteDefault,
+      deviceMockup ${imageProjection},
+      sections[] {
+        ...,
+        image ${imageProjection},
+        images[] ${imageProjection}
+      },
+      seo {
+        ...,
+        ogImage ${imageProjection}
+      }
+    }`,
+    { slug },
+  );
+}
+
+export async function getNiches(): Promise<Niche[]> {
+  return loadQuery<Niche[]>(
+    groq`*[_type == "niche" && defined(slug.current)] | order(title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      keywords,
+      paletteDefault,
+      "count": count(*[_type == "demo" && status == "published" && references(^._id)])
+    }`,
+  );
+}
+
+export interface Palette {
+  primary?: string;
+  bg?: string;
+  accent?: string;
+}
+
+export interface Niche {
+  _id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  keywords?: string[];
+  paletteDefault?: Palette;
+  /** Published demo count — populated by getNiches */
+  count?: number;
+}
+
+/** Lightweight projection used by the /demos portfolio grid */
+export interface DemoCard {
+  _id: string;
+  title: string;
+  slug: string;
+  nicheLabel?: string;
+  nicheTitle?: string;
+  nicheSlug?: string;
+  description?: string;
+  tags?: string[];
+  liveUrl?: string;
+  highlighted?: boolean;
+  deviceMockup?: SanityImage;
+  hireCta?: { label?: string; href?: string };
+  palette?: Palette;
+  paletteFallback?: Palette;
+}
+
+export interface DemoSection {
+  _type:
+    | "demoHero"
+    | "demoFeatures"
+    | "demoPricing"
+    | "demoSlider"
+    | "demoStats"
+    | "demoReviews"
+    | "demoGallery"
+    | "demoLocation"
+    | "demoFaq"
+    | "demoCta";
+  _key: string;
+  enabled?: boolean;
+  variant?: string;
+  // hero
+  headline?: string;
+  subheadline?: string;
+  image?: SanityImage;
+  imageUrl?: string;
+  ctaPrimary?: string;
+  ctaSecondary?: string;
+  // features / faq / gallery / stats / reviews / pricing / slider
+  heading?: string;
+  subheading?: string;
+  plans?: Array<{
+    name?: string;
+    price?: string;
+    period?: string;
+    description?: string;
+    features?: string[];
+    highlighted?: boolean;
+    cta?: string;
+  }>;
+  slides?: Array<{ title?: string; text?: string; imageUrl?: string }>;
+  items?: Array<{
+    title?: string;
+    description?: string;
+    icon?: string;
+    question?: string;
+    answer?: string;
+    value?: string;
+    label?: string;
+    author?: string;
+    rating?: number;
+    text?: string;
+    time?: string;
+  }>;
+  images?: SanityImage[];
+  imageUrls?: string[];
+  // reviews
+  rating?: number;
+  totalReviews?: number;
+  // location
+  address?: string;
+  mapQuery?: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface Demo {
+  _id: string;
+  _type: "demo";
+  _createdAt: string;
+  title: string;
+  slug: string;
+  nicheLabel?: string;
+  nicheTitle?: string;
+  nicheSlug?: string;
+  nicheKeywords?: string[];
+  description?: string;
+  tags?: string[];
+  liveUrl?: string;
+  highlighted?: boolean;
+  status?: "draft" | "published";
+  deviceMockup?: SanityImage;
+  palette?: Palette;
+  paletteFallback?: Palette;
+  sections?: DemoSection[];
+  hireCta?: { label?: string; href?: string };
+  seo?: Seo;
 }
 
 export interface SanityImage {
@@ -85,6 +276,9 @@ export interface Post {
   title?: string;
   slug: Slug;
   excerpt?: string;
+  publishedAt?: string;
+  category?: string;
+  readTime?: string;
   mainImage?: SanityImage;
   body: PortableTextBlock[];
   seo?: Seo;

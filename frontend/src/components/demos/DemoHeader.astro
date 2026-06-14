@@ -1,0 +1,49 @@
+---
+interface NavItem {
+  label: string;
+  href: string;
+}
+interface Props {
+  title: string;
+  hireHref: string;
+  hireLabel: string;
+  nav: NavItem[];
+}
+
+const { title, hireHref, hireLabel, nav } = Astro.props;
+// Text logo: first word bold ink, rest accent — reads as a wordmark, not a system label.
+const [first, ...rest] = title.split(" ");
+---
+
+<header class="sticky top-0 z-40 border-b border-border-solid bg-bg/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3.5 sm:px-6">
+    <a href="#top" class="font-display text-lg font-extrabold tracking-[-0.02em] text-ink no-underline">
+      {first}<span class="text-purple-light">{rest.length ? ` ${rest.join(" ")}` : ""}</span>
+    </a>
+
+    {
+      nav.length > 0 && (
+        <nav class="ml-auto hidden items-center gap-7 md:flex" aria-label="Secciones">
+          {nav.map((item) => (
+            <a
+              href={item.href}
+              class="text-sm text-ink-dim no-underline transition-colors hover:text-ink"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    <a
+      href={hireHref}
+      class:list={[
+        "rounded-pill bg-purple px-5 py-2 text-sm font-semibold text-white no-underline transition-colors hover:bg-purple-dark",
+        nav.length > 0 ? "" : "ml-auto",
+      ]}
+    >
+      {hireLabel}
+    </a>
+  </div>
+</header>

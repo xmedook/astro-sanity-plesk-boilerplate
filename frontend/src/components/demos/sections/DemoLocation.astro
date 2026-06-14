@@ -1,0 +1,83 @@
+---
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+}
+
+const { section } = Astro.props;
+const query = section.mapQuery || section.address || "México";
+// Google Maps embed — no API key required for the q=&output=embed form.
+const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=15&output=embed`;
+---
+
+<section id="ubicacion" class="scroll-mt-24 py-16">
+  {section.heading && (
+    <h2 class="mb-8 font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-balance text-ink sm:text-4xl">
+      {section.heading}
+    </h2>
+  )}
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    {/* Map */}
+    <div class="overflow-hidden rounded-card border border-border-solid">
+      <iframe
+        title={`Mapa — ${query}`}
+        src={mapSrc}
+        class="h-full min-h-[320px] w-full"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        style="border:0; filter: invert(0.9) hue-rotate(180deg);"
+      ></iframe>
+    </div>
+
+    {/* Contact form — demo only; wire to siteSettings/API in production (TODO) */}
+    <form class="flex flex-col gap-4 rounded-card border border-border-solid bg-surface p-6 sm:p-8" data-demo-contact>
+      {(section.address || section.phone || section.email) && (
+        <div class="mb-2 space-y-1 text-sm text-ink-dim">
+          {section.address && <p>📍 {section.address}</p>}
+          {section.phone && <p>📞 {section.phone}</p>}
+          {section.email && <p>✉️ {section.email}</p>}
+        </div>
+      )}
+      <label class="flex flex-col gap-1.5 text-sm text-ink-dim">
+        Nombre
+        <input
+          type="text"
+          name="name"
+          required
+          autocomplete="name"
+          class="rounded-card border border-border-solid bg-surface-2 px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted focus:border-purple"
+          placeholder="Tu nombre"
+        />
+      </label>
+      <label class="flex flex-col gap-1.5 text-sm text-ink-dim">
+        Email
+        <input
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="rounded-card border border-border-solid bg-surface-2 px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted focus:border-purple"
+          placeholder="tu@correo.com"
+        />
+      </label>
+      <label class="flex flex-col gap-1.5 text-sm text-ink-dim">
+        Mensaje
+        <textarea
+          name="message"
+          rows="4"
+          required
+          class="rounded-card border border-border-solid bg-surface-2 px-4 py-2.5 text-ink outline-none transition-colors placeholder:text-muted focus:border-purple"
+          placeholder="¿En qué te ayudamos?"
+        ></textarea>
+      </label>
+      <button
+        type="submit"
+        class="rounded-pill bg-purple px-6 py-3 font-semibold text-white transition-colors hover:bg-purple-dark"
+      >
+        Enviar mensaje
+      </button>
+    </form>
+  </div>
+</section>

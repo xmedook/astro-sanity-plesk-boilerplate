@@ -6,9 +6,13 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** Wide container for landing/portfolio surfaces; default narrow blog measure. */
+  wide?: boolean;
+  /** Bare shell — no cheapweb header/footer/container. The page owns all chrome (demo sites). */
+  bare?: boolean;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, wide = false, bare = false } = Astro.props;
 const canonicalURL = Astro.url;
 
 // Enable visual editing overlays when the env variable is set to "true"
@@ -17,7 +21,7 @@ const visualEditingEnabled =
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -45,7 +49,7 @@ const visualEditingEnabled =
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@500;700;800&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -54,15 +58,18 @@ const visualEditingEnabled =
   </head>
   <body>
     <VisualEditing enabled={visualEditingEnabled} />
-    <div class="mx-auto sm:max-w-3xl sm:px-5">
-      <header class="fixed left-0 right-0 top-0 z-10 flex border-b border-gray-200 bg-white px-1 sm:static sm:border-b-0 sm:bg-transparent sm:my-3 sm:py-2">
-        <a class="font-extrabold text-lg leading-5 pl-2 my-3 no-underline text-black sm:my-3 sm:mb-2 sm:text-2xl" href="/">Astro + Sanity</a>
+    {bare ? (
+      <slot />
+    ) : (
+    <div class:list={["mx-auto px-4", wide ? "max-w-6xl sm:px-6" : "sm:max-w-3xl sm:px-5"]}>
+      <header class="fixed left-0 right-0 top-0 z-10 flex border-b border-border-solid bg-surface px-1 sm:static sm:border-b-0 sm:bg-transparent sm:my-3 sm:py-2">
+        <a class="font-display font-extrabold text-xl leading-none tracking-tight pl-2 my-3 no-underline text-ink sm:my-3 sm:mb-2 sm:text-3xl" href="/">cheapweb<span class="text-purple">.mx</span></a>
       </header>
       <main class="mt-[45px] sm:mt-0">
         <slot />
       </main>
       <footer class="flex justify-end px-3 sm:my-3">
-        <p class="text-sm leading-5 flex items-center gap-0.5">
+        <p class="text-sm leading-5 flex items-center gap-0.5 text-ink-dim">
           Made with <svg
             data-sanity-icon="heart-filled"
             width="1em"
@@ -79,5 +86,6 @@ const visualEditingEnabled =
         </p>
       </footer>
     </div>
+    )}
   </body>
 </html>

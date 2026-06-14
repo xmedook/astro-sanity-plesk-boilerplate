@@ -1,0 +1,75 @@
+---
+import type { DemoSection } from "../../../utils/sanity";
+
+interface Props {
+  section: DemoSection;
+}
+
+const { section } = Astro.props;
+const items = section.items ?? [];
+const variant = section.variant || "grid";
+---
+
+<section id="servicios" class="scroll-mt-24 py-16">
+  {section.heading && (
+    <h2 class="font-display text-3xl font-bold leading-tight tracking-[-0.02em] text-balance text-ink sm:text-4xl">
+      {section.heading}
+    </h2>
+  )}
+
+  {/* GRID: cards */}
+  {
+    variant === "grid" && (
+      <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <div class="rounded-card border border-border-solid bg-surface p-6">
+            {item.icon && <div class="text-2xl">{item.icon}</div>}
+            <h3 class="mt-3 font-display text-lg font-semibold text-ink">{item.title}</h3>
+            {item.description && <p class="mt-2 text-sm leading-6 text-ink-dim">{item.description}</p>}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  {/* ROWS: numbered alternating rows, no cards */}
+  {
+    variant === "rows" && (
+      <div class="mt-10 divide-y divide-border-solid border-y border-border-solid">
+        {items.map((item, i) => (
+          <div class="grid gap-3 py-7 sm:grid-cols-[auto_1fr] sm:gap-8">
+            <span class="font-display text-3xl font-extrabold tabular-nums text-purple-light">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <h3 class="font-display text-xl font-bold text-ink">
+                {item.icon && <span class="mr-2">{item.icon}</span>}
+                {item.title}
+              </h3>
+              {item.description && <p class="mt-2 max-w-2xl text-ink-dim">{item.description}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  {/* LIST: compact two-column */}
+  {
+    variant === "list" && (
+      <ul class="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+        {items.map((item) => (
+          <li class="flex gap-4">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-elevated text-lg" aria-hidden="true">
+              {item.icon || "•"}
+            </span>
+            <div>
+              <h3 class="font-display text-base font-bold text-ink">{item.title}</h3>
+              {item.description && <p class="mt-1 text-sm leading-6 text-ink-dim">{item.description}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>

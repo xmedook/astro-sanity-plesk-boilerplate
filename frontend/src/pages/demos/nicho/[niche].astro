@@ -1,0 +1,38 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import DemoCard from "../../../components/demos/DemoCard.astro";
+import { getNiches, getDemosByNiche } from "../../../utils/sanity";
+
+export async function getStaticPaths() {
+  const niches = await getNiches();
+  return niches
+    .filter((n) => (n.count ?? 0) > 0)
+    .map((niche) => ({ params: { niche: niche.slug }, props: { niche } }));
+}
+
+const { niche } = Astro.props;
+const demos = await getDemosByNiche(niche.slug);
+
+const title = `Demos de ${niche.title} — cheapweb.mx`;
+const description =
+  niche.description || `Sitios demo para ${niche.title}. Míralos en vivo y contrata uno igual.`;
+---
+
+<Layout title={title} description={description} wide>
+  <section class="py-12 sm:py-16">
+    <a
+      href="/demos"
+      class="inline-flex items-center gap-1.5 text-sm text-ink-dim no-underline transition-colors hover:text-ink"
+    >
+      <span aria-hidden="true">←</span> Todos los nichos
+    </a>
+    <h1 class="mt-4 font-display text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
+      Demos de {niche.title}
+    </h1>
+    {description && <p class="mt-4 max-w-2xl text-lg leading-7 text-ink-dim">{description}</p>}
+
+    <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {demos.map((demo) => <DemoCard demo={demo} />)}
+    </div>
+  </section>
+</Layout>

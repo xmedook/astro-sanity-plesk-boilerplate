@@ -1,0 +1,108 @@
+---
+import { urlFor, buildSrcSet } from "../../utils/image";
+import type { DemoCard } from "../../utils/sanity";
+
+interface Props {
+  demo: DemoCard;
+}
+
+const { demo } = Astro.props;
+
+// Card CTA: live external site if present, else the internal demo page.
+const liveHref = demo.liveUrl || `/demos/${demo.slug}`;
+const liveLabel = demo.liveUrl ? "Ver sitio en vivo" : "Ver demo";
+const external = Boolean(demo.liveUrl);
+
+const nicheLabel = demo.nicheLabel || demo.nicheTitle || "Sitio";
+const hireHref = demo.hireCta?.href || "/express";
+const hireLabel = demo.hireCta?.label || "Contratar uno igual";
+
+// Each card adopts its demo's own accent so the grid reads as varied, not cloned.
+const accent = demo.palette?.primary || demo.paletteFallback?.primary || "var(--color-purple-light)";
+---
+
+<article
+  class:list={[
+    "group relative flex flex-col rounded-2xl border bg-surface p-3 transition duration-200 ease-out will-change-transform hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none",
+    demo.highlighted
+      ? "border-purple shadow-[0_0_0_1px_var(--color-purple)] hover:shadow-[0_24px_48px_rgba(130,36,227,0.28)]"
+      : "border-border-solid hover:border-purple hover:shadow-[0_24px_48px_rgba(130,36,227,0.22)]",
+  ]}
+>
+  {/* Browser chrome — "SITIO REAL" · bottom edge carries the demo's own accent */}
+  <div class="flex items-center gap-2 rounded-t-xl border-b-2 bg-elevated/60 px-3 py-2" style={`border-color:${accent}`}>
+    <span class="h-2.5 w-2.5 rounded-full bg-green-400 shadow-[0_0_8px] shadow-green-400/60"></span>
+    <span class="font-sans text-[0.65rem] font-bold uppercase tracking-[0.12em] text-ink-dim">Sitio real</span>
+    <span class="ml-auto flex gap-1.5 opacity-30">
+      <span class="h-1 w-6 rounded bg-muted"></span>
+      <span class="h-1 w-6 rounded bg-muted"></span>
+      <span class="h-1 w-4 rounded bg-muted"></span>
+    </span>
+  </div>
+
+  {/* Device mockup */}
+  <div class="overflow-hidden rounded-b-xl bg-bg">
+    {
+      demo.deviceMockup ? (
+        <img
+          class="aspect-[16/10] w-full object-cover object-top"
+          src={urlFor(demo.deviceMockup).width(640).height(400).fit("crop").auto("format").quality(80).url()}
+          srcset={buildSrcSet(demo.deviceMockup, [400, 640, 880], 80)}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          width={640}
+          height={400}
+          loading="lazy"
+          decoding="async"
+          alt={demo.deviceMockup.alt || `Demo ${demo.title}`}
+        />
+      ) : (
+        <div class="flex aspect-[16/10] w-full items-center justify-center bg-surface-2 text-muted">
+          <span class="font-sans text-xs font-bold uppercase tracking-[0.08em]">Mockup TODO</span>
+        </div>
+      )
+    }
+  </div>
+
+  {/* Body */}
+  <div class="flex flex-1 flex-col px-2 pb-2 pt-5">
+    <p class="flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.08em]" style={`color:${accent}`}>
+      <span class="h-1.5 w-1.5 shrink-0 rounded-full" style={`background:${accent}`}></span>
+      {nicheLabel}
+    </p>
+    <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink">
+      <a
+        href={liveHref}
+        {...external ? { target: "_blank", rel: "noopener" } : {}}
+        class="no-underline outline-none before:absolute before:inset-0 before:content-['']"
+      >
+        {demo.title}
+      </a>
+    </h3>
+
+    {demo.description && <p class="mt-3 text-sm leading-6 text-ink-dim">{demo.description}</p>}
+
+    {
+      demo.tags && demo.tags.length > 0 && (
+        <ul class="mt-5 flex flex-wrap gap-2">
+          {demo.tags.map((tag) => (
+            <li class="rounded-full border border-border-solid px-3 py-1 text-xs text-ink-dim">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="mt-6 flex items-center justify-between pt-2">
+      <span class="inline-flex items-center gap-2 font-semibold" style={`color:${accent}`}>
+        {liveLabel}
+        <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+      </span>
+      {/* Sits above the stretched card link so it stays independently clickable */}
+      <a
+        href={hireHref}
+        class="relative z-10 text-xs text-muted no-underline transition-colors hover:text-ink-dim"
+      >
+        {hireLabel}
+      </a>
+    </div>
+  </div>
+</article>
