@@ -2,6 +2,7 @@
 import { PortableText } from "astro-portabletext";
 import { createDataAttribute } from "@sanity/visual-editing-csm";
 import CodeBlock from "../../components/CodeBlock.astro";
+import PortableImage from "../../components/PortableImage.astro";
 import Layout from "../../layouts/Layout.astro";
 import { formatDate } from "../../utils";
 import { urlFor, buildSrcSet } from "../../utils/image";
@@ -51,34 +52,47 @@ const ogImage = ogImageSource
   description={seoDescription}
   image={ogImage}
 >
-  <section class="w-full my-1 mb-5">
+  <article class="mb-16">
+    <!-- Eyebrow: back link · category · date · read time -->
+    <div class="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold uppercase tracking-[0.08em]">
+      <a href="/blog" class="text-purple-light no-underline transition-colors hover:text-purple">← Volver al blog</a>
+      {post.category && <span class="text-muted" aria-hidden="true">·</span>}
+      {post.category && <span class="text-purple-light">{post.category}</span>}
+      <span class="text-muted" aria-hidden="true">·</span>
+      <span class="normal-case text-ink-dim">{formatDate(post.publishedAt ?? post._createdAt)}</span>
+      {post.readTime && <span class="text-muted" aria-hidden="true">·</span>}
+      {post.readTime && <span class="normal-case text-ink-dim">{post.readTime}</span>}
+    </div>
+
+    <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.02em] text-balance text-ink md:text-5xl">{post.title}</h1>
+
+    {post.excerpt && (
+      <p class="mt-5 font-serif text-xl leading-relaxed text-pretty text-ink-dim md:text-2xl" data-sanity={dataAttr?.scope("excerpt").toString()}>
+        {post.excerpt}
+      </p>
+    )}
+
     {
-      post.mainImage ? (
+      post.mainImage && (
         <img
-          class="w-full h-50 object-cover md:w-187.5 md:h-95"
-          src={urlFor(post.mainImage).width(750).auto("format").quality(85).url()}
-          srcset={buildSrcSet(post.mainImage, [375, 750, 1200], 85)}
-          sizes="(max-width: 800px) 100vw, 750px"
+          class="mt-8 aspect-[16/9] w-full rounded-card border border-border-solid object-cover"
+          src={urlFor(post.mainImage).width(768).auto("format").quality(80).url()}
+          srcset={buildSrcSet(post.mainImage, [480, 768, 1200], 80)}
+          sizes="(max-width: 768px) 100vw, 768px"
           width={post.mainImage.width}
           height={post.mainImage.height}
+          style={post.mainImage.lqip ? `background-image:url(${post.mainImage.lqip});background-size:cover;background-position:center` : undefined}
           loading="eager"
-          decoding="sync"
-          alt={post.mainImage.alt || ""}
+          fetchpriority="high"
+          decoding="async"
+          alt={post.mainImage.alt || post.title || ""}
           data-sanity={dataAttr?.scope("mainImage").toString()}
         />
-      ) : (
-        <div class="w-full h-50 bg-black md:w-187.5 md:h-95" />
       )
     }
-    <div class="px-3">
-      <h1 class="font-sans font-extrabold text-4xl leading-9 my-5 md:text-7xl md:leading-18 md:mt-13 md:mb-0 md:-tracking-[0.025em]">{post.title}</h1>
-      <p class="font-serif font-normal text-2xl leading-7 mt-0 md:leading-8 md:mt-3 md:mb-3" data-sanity={dataAttr?.scope("excerpt").toString()}>{post.excerpt}</p>
-      <p class="font-sans font-semibold text-sm leading-5 mt-5 md:text-lg md:leading-6 md:mt-0">
-        {formatDate(post._createdAt)}
-      </p>
-      <div class="prose prose-lg prose-serif mt-13 md:mt-21 max-w-none prose-blockquote:border-l-[5px] prose-blockquote:border-black prose-blockquote:pl-3 prose-blockquote:ml-5 prose-a:text-blue-600 prose-a:no-underline" data-sanity={dataAttr?.scope("body").toString()}>
-        <PortableText value={post.body} components={{ type: { code: CodeBlock } }} />
-      </div>
+
+    <div class="prose prose-lg prose-serif prose-invert mt-10 max-w-none prose-headings:font-display prose-headings:text-ink prose-blockquote:border-l-[5px] prose-blockquote:border-purple prose-blockquote:pl-4 prose-blockquote:not-italic prose-blockquote:text-ink prose-a:text-purple-light prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-purple" data-sanity={dataAttr?.scope("body").toString()}>
+      <PortableText value={post.body} components={{ type: { code: CodeBlock, image: PortableImage } }} />
     </div>
-  </section>
+  </article>
 </Layout>

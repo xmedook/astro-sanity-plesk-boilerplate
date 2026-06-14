@@ -29,6 +29,9 @@ const visualEditingEnabled =
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- Sanity image CDN — preconnect so the LCP hero image isn't blocked on a cold TLS handshake -->
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+
     <!-- Primary meta -->
     {description && <meta name="description" content={description} />}
 
