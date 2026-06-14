@@ -17,7 +17,7 @@ const bullets = [
   stripeReady
     ? "Stripe seguro. Sin tarjeta guardada. Sin contratos."
     : "Pago seguro. Sin tarjeta guardada. Sin contratos.",
-  `${cupos.total} cupos ${cupos.period}. ${cupos.reserved} ya reservados.`,
+  `Tomamos ${cupos.total} proyectos por semana para cuidar la calidad.`,
 ];
 ---
 
@@ -64,10 +64,10 @@ const bullets = [
 
       <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Cta href={checkoutHref()} event="checkout_started" pulse external={stripeReady}>
-          Reservar mi cupo · Pagar {price} <span aria-hidden="true">→</span>
+          Empezar mi sitio · Pagar {price} <span aria-hidden="true">→</span>
         </Cta>
         <Cta href={whatsappUrl} variant="ghost" event="click_cta_express" external>
-          ¿Dudas antes? Hablanos por WhatsApp
+          ¿Dudas antes? Háblanos por WhatsApp
         </Cta>
       </div>
     </div>

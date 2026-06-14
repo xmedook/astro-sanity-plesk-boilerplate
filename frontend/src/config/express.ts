@@ -9,7 +9,7 @@
 export const express = {
   price: "$3,900",
   priceAnchor: "$8,000+", // precio de referencia tachado
-  savings: "ahorrás $4,100 (51%)",
+  savings: "ahorras $4,100 (51%)",
   deliveryDays: 7,
 
   whatsapp: "528313359341", // wa.me/528313359341 — known, from CLAUDE.md
