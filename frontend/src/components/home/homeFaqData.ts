@@ -2,7 +2,7 @@
 export const homeFaqs = [
   {
     q: "¿Por qué tan barato comparado con una agencia?",
-    a: "Sin oficinas, sin vendedores, sin intermediarios. 6 proyectos al mes máximo. Pagás directo al equipo. Misma calidad, sin el sobreprecio.",
+    a: "Sin oficinas, sin vendedores, sin intermediarios. 6 proyectos al mes máximo. Pagas directo al equipo. Misma calidad, sin el sobreprecio.",
   },
   {
     q: "¿Es confiable? ¿No es scam?",
@@ -10,7 +10,7 @@ export const homeFaqs = [
   },
   {
     q: "¿Qué pasa si no me gusta el diseño?",
-    a: "Lo aprobás al 100% antes de desarrollar. Si no te gusta, iteramos. Si aún así no funciona, te devolvemos.",
+    a: "Lo apruebas al 100% antes de desarrollar. Si no te gusta, iteramos. Si aún así no funciona, te devolvemos.",
   },
   {
     q: "¿Cuánto tiempo tarda?",
@@ -38,10 +38,10 @@ export const homeFaqs = [
   },
   {
     q: "¿Qué necesito para empezar?",
-    a: "Tu logo (si tenés), textos, fotos de tu negocio, y acceso a tu dominio actual si ya tenés uno. Si no tenés nada, lo armamos desde cero.",
+    a: "Tu logo (si tienes), textos, fotos de tu negocio, y acceso a tu dominio actual si ya tienes uno. Si no tienes nada, lo armamos desde cero.",
   },
   {
     q: "¿Y si sólo necesito una landing rápida sin tanto?",
-    a: "Mirá Landing Express ($3,900 MXN, 7 días, WordPress + GA4 + Pixel incluido) en cheapweb.mx/express.",
+    a: "Mira Landing Express ($3,900 MXN, 7 días, WordPress + GA4 + Pixel incluido) en cheapweb.mx/express.",
   },
 ] as const;

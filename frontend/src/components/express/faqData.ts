@@ -14,7 +14,7 @@ export const faqs = [
   },
   {
     q: "¿Puedo editar el sitio yo después?",
-    a: "Sí. Es WordPress — 100% tuyo, 100% editable. Si querés que lo mantengamos nosotros: $799/mes, opcional.",
+    a: "Sí. Es WordPress — 100% tuyo, 100% editable. Si quieres que lo mantengamos nosotros: $799/mes, opcional.",
   },
   {
     q: "¿Por qué $3,900 y no $8,000?",
@@ -22,7 +22,7 @@ export const faqs = [
   },
   {
     q: "¿Qué tracking incluye exactamente?",
-    a: "GA4 (Google Analytics 4) + Meta Pixel. Configurados y funcionando antes de la entrega. Si tenés cuenta de Ads activa, podés medir conversiones desde el primer día.",
+    a: "GA4 (Google Analytics 4) + Meta Pixel. Configurados y funcionando antes de la entrega. Si tienes cuenta de Ads activa, puedes medir conversiones desde el primer día.",
   },
   {
     q: "¿Por qué es mejor que otras opciones a precio similar?",
